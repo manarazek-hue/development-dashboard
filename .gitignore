@@ -3,3 +3,5 @@
 Thumbs.db
 
 *.before-v22
+
+data/config.js.before-coding-update

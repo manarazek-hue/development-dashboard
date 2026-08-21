@@ -2,33 +2,60 @@
     "use strict";
 
     const config = DASHBOARD_CONFIG;
-    const rate = config.exchangeRate.AED_TO_EGP;
-    const STORAGE_KEY = "developmentDashboardV23";
 
-    let state = loadState();
+    const rate =
+        config.exchangeRate.AED_TO_EGP;
+
+    const STORAGE_KEY =
+        "developmentDashboardV24";
+
+    const state = loadState();
+
+    let currentSection = null;
+
 
     const views = {
-        home: document.getElementById("homeView"),
-        products: document.getElementById("productsView"),
-        funding: document.getElementById("fundingView")
+        home:
+            document.getElementById(
+                "homeView"
+            ),
+
+        products:
+            document.getElementById(
+                "productsView"
+            ),
+
+        funding:
+            document.getElementById(
+                "fundingView"
+            )
     };
+
 
     function defaultState() {
         return {
-            selections: {},
-            included: {}
+            included: {},
+            source: {}
         };
     }
 
+
     function loadState() {
         try {
-            const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-            return saved || defaultState();
-        } catch {
+            return (
+                JSON.parse(
+                    localStorage.getItem(
+                        STORAGE_KEY
+                    )
+                ) ||
+                defaultState()
+            );
+        }
+        catch {
             return defaultState();
         }
     }
+
 
     function saveState() {
         localStorage.setItem(
@@ -37,63 +64,89 @@
         );
     }
 
-    function money(value, currency = "EGP") {
+
+    function money(
+        value,
+        currency = "EGP"
+    ) {
         if (!Number.isFinite(value)) {
             return "N/A";
         }
 
-        return new Intl.NumberFormat("en-US", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        }).format(value) + " " + currency;
+        return (
+            new Intl.NumberFormat(
+                "en-US",
+                {
+                    maximumFractionDigits: 2
+                }
+            ).format(value)
+            +
+            " "
+            +
+            currency
+        );
     }
 
-    function isAvailable(offer) {
+
+    function available(offer) {
         return Boolean(
             offer &&
             offer.available &&
-            Number.isFinite(offer.price) &&
+            Number.isFinite(
+                offer.price
+            ) &&
             offer.price > 0 &&
             offer.url
         );
     }
 
-    function egyptFinal(product) {
-        if (!isAvailable(product.egypt)) {
+
+    function egyptCost(product) {
+        if (!available(product.egypt)) {
             return Infinity;
         }
 
         return (
             product.egypt.price +
-            (product.egypt.extraCostsEGP || 0)
+            (
+                product.egypt
+                    .extraCostsEGP ||
+                0
+            )
         );
     }
 
-    function uaeListingEGP(product) {
-        if (!isAvailable(product.uae)) {
-            return Infinity;
-        }
 
-        return product.uae.price * rate;
-    }
-
-    function uaeFinal(product) {
-        if (!isAvailable(product.uae)) {
+    function uaeCost(product) {
+        if (!available(product.uae)) {
             return Infinity;
         }
 
         return (
-            uaeListingEGP(product) +
-            (product.uae.extraCostsEGP || 0)
+            product.uae.price *
+            rate
+            +
+            (
+                product.uae
+                    .extraCostsEGP ||
+                0
+            )
         );
     }
 
-    function recommended(product) {
-        const eg = egyptFinal(product);
-        const ae = uaeFinal(product);
 
-        if (!Number.isFinite(eg) && !Number.isFinite(ae)) {
-            return "none";
+    function cheapestSource(product) {
+        const eg =
+            egyptCost(product);
+
+        const ae =
+            uaeCost(product);
+
+        if (
+            !Number.isFinite(eg) &&
+            !Number.isFinite(ae)
+        ) {
+            return null;
         }
 
         if (!Number.isFinite(eg)) {
@@ -104,629 +157,145 @@
             return "egypt";
         }
 
-        if (eg === ae) {
-            return "same";
-        }
-
-        return eg < ae ? "egypt" : "uae";
+        return (
+            eg <= ae
+                ? "egypt"
+                : "uae"
+        );
     }
 
-    function getSelection(product) {
-        const saved = state.selections[product.id];
+
+    function included(product) {
+        if (
+            Object.prototype
+                .hasOwnProperty.call(
+                    state.included,
+                    product.id
+                )
+        ) {
+            return Boolean(
+                state.included[
+                    product.id
+                ]
+            );
+        }
+
+        return (
+            product.status ===
+            "needed"
+        );
+    }
+
+
+    function selectedSource(product) {
+        const selected =
+            state.source[
+                product.id
+            ];
 
         if (
-            saved === "egypt" &&
-            isAvailable(product.egypt)
+            selected === "egypt" &&
+            available(product.egypt)
         ) {
             return "egypt";
         }
 
         if (
-            saved === "uae" &&
-            isAvailable(product.uae)
+            selected === "uae" &&
+            available(product.uae)
         ) {
             return "uae";
         }
 
-        const best = recommended(product);
-
-        if (best === "egypt" || best === "uae") {
-            return best;
-        }
-
-        return null;
+        return "undecided";
     }
 
-    function isIncluded(product) {
-        if (
-            Object.prototype.hasOwnProperty.call(
-                state.included,
-                product.id
-            )
+
+    function estimatedProductCost(
+        product
+    ) {
+        if (!included(product)) {
+            return 0;
+        }
+
+        const selected =
+            selectedSource(product);
+
+        let cost;
+
+        if (selected === "egypt") {
+            cost =
+                egyptCost(product);
+        }
+        else if (
+            selected === "uae"
         ) {
-            return Boolean(state.included[product.id]);
+            cost =
+                uaeCost(product);
         }
+        else {
+            const best =
+                cheapestSource(product);
 
-        // Needed products start included.
-        // Optional products start excluded.
-        return product.status === "needed";
-    }
-
-    function selectedFinal(product) {
-        if (!isIncluded(product)) {
-            return 0;
+            if (best === "egypt") {
+                cost =
+                    egyptCost(product);
+            }
+            else if (
+                best === "uae"
+            ) {
+                cost =
+                    uaeCost(product);
+            }
+            else {
+                return 0;
+            }
         }
-
-        const selection = getSelection(product);
-
-        if (!selection) {
-            return 0;
-        }
-
-        const cost =
-            selection === "egypt"
-                ? egyptFinal(product)
-                : uaeFinal(product);
 
         if (!Number.isFinite(cost)) {
-            return 0;
+
+            if (
+                product.localOffer &&
+                product.localOffer.available &&
+                Number.isFinite(product.localOffer.price)
+            ) {
+                cost = product.localOffer.price;
+            }
+            else {
+                return 0;
+            }
         }
 
-        return cost * (product.quantity || 1);
+        return (
+            cost *
+            (product.quantity || 1)
+        );
     }
+
 
     function sectionTarget(section) {
-        return section.products.reduce(
-            (total, product) =>
-                total + selectedFinal(product),
-            0
-        );
+        const productsTotal =
+            section.products.reduce(
+                (sum, product) =>
+                    sum +
+                    estimatedProductCost(
+                        product
+                    ),
+                0
+            );
+
+        const localBuildTotal =
+            section.localBuild &&
+            section.localBuild.enabled &&
+            Number.isFinite(
+                section.localBuild.priceEGP
+            )
+                ? section.localBuild.priceEGP
+                : 0;
+
+        return productsTotal + localBuildTotal;
     }
 
-    function allTarget() {
-        return Object.values(config.sections).reduce(
-            (total, section) =>
-                total + sectionTarget(section),
-            0
-        );
-    }
-
-    function showView(name, scrollToTop = true) {
-        Object.values(views).forEach(view =>
-            view.classList.remove("active")
-        );
-
-        views[name].classList.add("active");
-
-        if (scrollToTop) {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-        }
-    }
-
-    function ownedHTML(section) {
-        if (!section.owned || !section.owned.length) {
-            return "";
-        }
-
-        return `
-            <div class="owned-section">
-
-                <div class="owned-heading">
-                    <p class="eyebrow">
-                        CURRENT EQUIPMENT
-                    </p>
-
-                    <h2>Already Owned</h2>
-
-                    <p>
-                        These items are already available and
-                        are not included in the funding target.
-                    </p>
-                </div>
-
-                <div class="owned-grid">
-
-                    ${section.owned.map(item => `
-                        <article class="owned-card">
-
-                            <div class="owned-check">
-                                ✓ OWNED
-                            </div>
-
-                            <div class="product-category">
-                                ${item.category}
-                            </div>
-
-                            <h3>${item.name}</h3>
-
-                            <strong>${item.model}</strong>
-
-                            <p>
-                                ${item.details}
-                            </p>
-
-                        </article>
-                    `).join("")}
-
-                </div>
-
-            </div>
-        `;
-    }
-
-    function unavailableOffer(country) {
-        const label =
-            country === "egypt"
-                ? "AMAZON EGYPT"
-                : "AMAZON UAE";
-
-        return `
-            <div class="offer unavailable-offer">
-
-                <div class="store">
-                    <span>${label}</span>
-                </div>
-
-                <div class="unavailable-label">
-                    NOT AVAILABLE
-                </div>
-
-                <p class="product-description">
-                    No current listing has been added
-                    for this store.
-                </p>
-
-            </div>
-        `;
-    }
-
-    function availableOffer(product, country) {
-        const offer = product[country];
-
-        const isEgypt = country === "egypt";
-
-        const finalCost =
-            isEgypt
-                ? egyptFinal(product)
-                : uaeFinal(product);
-
-        const current =
-            getSelection(product) === country;
-
-        const best =
-            recommended(product) === country;
-
-        const storeName =
-            isEgypt
-                ? "AMAZON EGYPT"
-                : "AMAZON UAE";
-
-        const price =
-            isEgypt
-                ? money(offer.price)
-                : money(offer.price, "AED");
-
-        const converted =
-            isEgypt
-                ? "Native currency: EGP"
-                : `Listing ≈ ${money(
-                    uaeListingEGP(product)
-                )}`;
-
-        return `
-            <div class="
-                offer
-                ${best ? "cheapest" : ""}
-                ${current ? "chosen-offer" : ""}
-            ">
-
-                <a
-                    class="offer-link"
-                    href="${offer.url}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-
-                    <div class="store">
-                        <span>${storeName}</span>
-                        <span>↗</span>
-                    </div>
-
-                    <div class="price">
-                        ${price}
-                    </div>
-
-                    <div class="converted">
-                        ${converted}
-                    </div>
-
-                    <div class="converted">
-                        Additional costs:
-                        ${money(
-                            offer.extraCostsEGP || 0
-                        )}
-                    </div>
-
-                    <div class="final-cost">
-                        Estimated final:
-                        ${money(finalCost)}
-                    </div>
-
-                    <span class="amazon-button">
-                        View exact item on Amazon →
-                    </span>
-
-                </a>
-
-                <button
-                    class="
-                        select-offer
-                        ${current
-                            ? "selected-offer"
-                            : ""}
-                    "
-                    data-select="${country}"
-                    data-product="${product.id}"
-                >
-                    ${current
-                        ? "SELECTED"
-                        : "SELECT"}
-                    ${isEgypt ? "EGYPT" : "UAE"}
-                </button>
-
-            </div>
-        `;
-    }
-
-    function comparisonHTML(product) {
-        const best = recommended(product);
-
-        if (best === "none") {
-            return `
-                No active Amazon listings currently
-                available for comparison.
-            `;
-        }
-
-        if (best === "same") {
-            return `
-                Estimated final costs are currently equal.
-            `;
-        }
-
-        const eg = egyptFinal(product);
-        const ae = uaeFinal(product);
-
-        if (
-            Number.isFinite(eg) &&
-            Number.isFinite(ae)
-        ) {
-            const difference =
-                Math.abs(eg - ae);
-
-            return `
-                ${best.toUpperCase()}
-                currently appears cheaper by
-                approximately
-                ${money(difference)}.
-            `;
-        }
-
-        return `
-            ${best.toUpperCase()}
-            is currently the only available
-            Amazon listing.
-        `;
-    }
-
-    function productHTML(product) {
-        const included = isIncluded(product);
-
-        return `
-            <article
-                class="
-                    product
-                    ${included
-                        ? ""
-                        : "product-not-included"}
-                "
-                id="product-${product.id}"
-            >
-
-                <div class="product-head">
-
-                    <div>
-
-                        <div class="product-category">
-                            ${product.category}
-                        </div>
-
-                        <h2>
-                            ${product.name}
-                        </h2>
-
-                        <strong>
-                            ${product.model}
-                        </strong>
-
-                        <p class="product-description">
-                            ${product.description}
-                        </p>
-
-                        <p class="product-description">
-                            ${product.specifications.join(
-                                " • "
-                            )}
-                        </p>
-
-                        <small>
-                            Quantity:
-                            ${product.quantity || 1}
-                            · Checked
-                            ${product.lastChecked}
-                        </small>
-
-                    </div>
-
-                    <span class="status">
-                        ${product.status}
-                    </span>
-
-                </div>
-
-
-                <div class="include-control">
-
-                    <label class="include-label">
-
-                        <input
-                            type="checkbox"
-                            data-include="${product.id}"
-                            ${included ? "checked" : ""}
-                        >
-
-                        <span>
-                            Include this item in
-                            funding target
-                        </span>
-
-                    </label>
-
-                    <span class="
-                        inclusion-state
-                        ${included
-                            ? "included-state"
-                            : "excluded-state"}
-                    ">
-                        ${included
-                            ? "INCLUDED"
-                            : "NOT INCLUDED"}
-                    </span>
-
-                </div>
-
-
-                <div class="offers">
-
-                    ${
-                        isAvailable(product.egypt)
-                            ? availableOffer(
-                                product,
-                                "egypt"
-                            )
-                            : unavailableOffer(
-                                "egypt"
-                            )
-                    }
-
-                    ${
-                        isAvailable(product.uae)
-                            ? availableOffer(
-                                product,
-                                "uae"
-                            )
-                            : unavailableOffer(
-                                "uae"
-                            )
-                    }
-
-                </div>
-
-
-                <div class="comparison">
-                    ${comparisonHTML(product)}
-                </div>
-
-            </article>
-        `;
-    }
-
-    function attachControls(sectionKey) {
-        document
-            .querySelectorAll("[data-select]")
-            .forEach(button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const scrollY =
-                            window.scrollY;
-
-                        state.selections[
-                            button.dataset.product
-                        ] =
-                            button.dataset.select;
-
-                        saveState();
-
-                        renderSection(
-                            sectionKey,
-                            true,
-                            scrollY
-                        );
-
-                        renderGlobalFunding();
-                    }
-                );
-            });
-
-        document
-            .querySelectorAll("[data-include]")
-            .forEach(input => {
-
-                input.addEventListener(
-                    "change",
-                    () => {
-
-                        const scrollY =
-                            window.scrollY;
-
-                        state.included[
-                            input.dataset.include
-                        ] =
-                            input.checked;
-
-                        saveState();
-
-                        renderSection(
-                            sectionKey,
-                            true,
-                            scrollY
-                        );
-
-                        renderGlobalFunding();
-                    }
-                );
-            });
-    }
-
-    function renderSection(
-        key,
-        preserveScroll = false,
-        previousScroll = 0
-    ) {
-        const section =
-            config.sections[key];
-
-        document.getElementById(
-            "sectionEyebrow"
-        ).textContent =
-            section.eyebrow;
-
-        document.getElementById(
-            "sectionTitle"
-        ).textContent =
-            section.title;
-
-        document.getElementById(
-            "sectionDescription"
-        ).textContent =
-            section.description;
-
-        document.getElementById(
-            "productGrid"
-        ).innerHTML = `
-            ${ownedHTML(section)}
-
-            <div class="shopping-heading">
-                <p class="eyebrow">
-                    DEVELOPMENT ROADMAP
-                </p>
-
-                <h2>
-                    Planned Equipment
-                </h2>
-
-                <p>
-                    Include only the items you
-                    currently want counted toward
-                    the funding target.
-                </p>
-            </div>
-
-            ${section.products
-                .map(productHTML)
-                .join("")}
-        `;
-
-        document.getElementById(
-            "sectionSummary"
-        ).innerHTML = `
-            <div class="summary-box">
-
-                <p class="eyebrow">
-                    SELECTED PURCHASE PLAN
-                </p>
-
-                <div class="summary-grid">
-
-                    <div class="metric">
-                        <span class="metric-label">
-                            Section Target
-                        </span>
-
-                        <span class="metric-value">
-                            ${money(
-                                sectionTarget(section)
-                            )}
-                        </span>
-                    </div>
-
-                    <div class="metric">
-                        <span class="metric-label">
-                            Exchange Rate
-                        </span>
-
-                        <span class="metric-value">
-                            1 AED =
-                            ${rate.toFixed(2)}
-                            EGP
-                        </span>
-                    </div>
-
-                    <div class="metric">
-                        <span class="metric-label">
-                            Rate Updated
-                        </span>
-
-                        <span class="metric-value">
-                            ${config.exchangeRate.updated}
-                        </span>
-                    </div>
-
-                </div>
-
-                <p class="warning">
-                    UAE conversion is a planning
-                    estimate. Verify current price,
-                    availability, shipping, customs,
-                    warranty and compatibility before
-                    purchasing.
-                </p>
-
-            </div>
-        `;
-
-        attachControls(key);
-
-        showView(
-            "products",
-            !preserveScroll
-        );
-
-        if (preserveScroll) {
-            requestAnimationFrame(() => {
-                window.scrollTo({
-                    top: previousScroll,
-                    behavior: "instant"
-                });
-            });
-        }
-    }
 
     function fundingNumbers() {
         const music =
@@ -754,7 +323,9 @@
         const percent =
             target > 0
                 ? Math.min(
-                    (raised / target) * 100,
+                    raised /
+                    target *
+                    100,
                     100
                 )
                 : 0;
@@ -769,172 +340,1172 @@
         };
     }
 
-    function renderGlobalFunding() {
-        const f = fundingNumbers();
 
-        document.getElementById(
-            "globalFunding"
-        ).innerHTML = `
+    function showView(
+        name,
+        scroll = true
+    ) {
+        Object.values(views)
+            .forEach(view => {
+                view.classList
+                    .remove("active");
+            });
 
-            <p class="eyebrow">
-                DEVELOPMENT FUND
-            </p>
+        views[name]
+            .classList
+            .add("active");
 
-            <div class="funding-grid">
+        if (scroll) {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
 
-                <div class="metric">
-                    <span class="metric-label">
-                        Music Target
+        updateMobileFunding();
+    }
+
+
+    function renderLocalBuild(section) {
+        const area =
+            document.getElementById(
+                "localBuildArea"
+            );
+
+        if (
+            !section.localBuild ||
+            !section.localBuild.enabled
+        ) {
+            area.innerHTML = "";
+            return;
+        }
+
+        const build =
+            section.localBuild;
+
+        area.innerHTML = `
+            <section class="local-build-statement">
+
+                <div class="local-build-header">
+
+                    <div>
+                        <p class="eyebrow">
+                            LOCAL BUILD OPTION
+                        </p>
+
+                        <h2>
+                            ${build.title}
+                        </h2>
+                    </div>
+
+                    <div class="local-build-price">
+                        ${money(build.priceEGP)}
+                    </div>
+
+                </div>
+
+                <div class="local-build-source">
+                    <span>
+                        PURCHASE SOURCE
                     </span>
 
-                    <span class="metric-value">
+                    <strong>
+                        ${build.source}
+                    </strong>
+
+                    <span class="local-location">
+                        ${build.location}
+                    </span>
+                </div>
+
+                <p class="local-build-description">
+                    ${build.description}
+                </p>
+
+                <div class="local-build-requirements">
+
+                    ${build.requirements
+                        .map(
+                            item =>
+                                `<span>✓ ${item}</span>`
+                        )
+                        .join("")}
+
+                </div>
+
+                <div class="local-build-footer">
+                    LOCAL PURCHASE · ASSEMBLED IN EGYPT
+                </div>
+
+            </section>
+        `;
+    }
+
+
+    function renderOwned(section) {
+        const area =
+            document.getElementById(
+                "ownedArea"
+            );
+
+        if (
+            !section.owned ||
+            !section.owned.length
+        ) {
+            area.innerHTML = "";
+            return;
+        }
+
+        area.innerHTML = `
+            <details
+                class="owned-section"
+                open
+            >
+
+                <summary
+                    class="owned-summary"
+                >
+                    <strong>
+                        Current Setup
+                    </strong>
+
+                    <span
+                        class="owned-count"
+                    >
+                        ${
+                            section.owned
+                                .length
+                        }
+                        OWNED
+                    </span>
+                </summary>
+
+                <div class="owned-grid">
+
+                    ${
+                        section.owned
+                            .map(item => `
+                                <article
+                                    class="owned-card"
+                                >
+                                    <span
+                                        class="owned-badge"
+                                    >
+                                        ✓ OWNED ·
+                                        ${item.category}
+                                    </span>
+
+                                    <h3>
+                                        ${item.name}
+                                    </h3>
+
+                                    <strong>
+                                        ${item.model}
+                                    </strong>
+
+                                    <p>
+                                        ${item.details}
+                                    </p>
+                                </article>
+                            `)
+                            .join("")
+                    }
+
+                </div>
+
+            </details>
+        `;
+    }
+
+
+    function marketOffer(
+        product,
+        country
+    ) {
+        const offer =
+            product[country];
+
+        const label =
+            country === "egypt"
+                ? "AMAZON EGYPT"
+                : "AMAZON UAE";
+
+        if (!available(offer)) {
+            return `
+                <div
+                    class="
+                        market-offer
+                        unavailable
+                    "
+                >
+                    <div
+                        class="market-header"
+                    >
+                        ${label}
+                    </div>
+
+                    <div
+                        class="market-price"
+                    >
+                        Not available
+                    </div>
+                </div>
+            `;
+        }
+
+        const best =
+            cheapestSource(product) ===
+            country;
+
+        const rawPrice =
+            country === "egypt"
+                ? money(
+                    offer.price
+                )
+                : money(
+                    offer.price,
+                    "AED"
+                );
+
+        const finalPrice =
+            country === "egypt"
+                ? egyptCost(product)
+                : uaeCost(product);
+
+        return `
+            <div
+                class="
+                    market-offer
+                    ${best ? "best" : ""}
+                "
+            >
+
+                <div
+                    class="market-header"
+                >
+                    <span>
+                        ${label}
+                    </span>
+
+                    ${
+                        best
+                            ? `
+                                <span
+                                    class="best-badge"
+                                >
+                                    BEST PRICE
+                                </span>
+                            `
+                            : ""
+                    }
+                </div>
+
+                <div
+                    class="market-price"
+                >
+                    ${rawPrice}
+                </div>
+
+                ${
+                    country === "uae"
+                        ? `
+                            <div
+                                class="
+                                    market-converted
+                                "
+                            >
+                                ≈
+                                ${money(
+                                    finalPrice
+                                )}
+                            </div>
+                        `
+                        : `
+                            <div
+                                class="
+                                    market-converted
+                                "
+                            >
+                                Final estimate:
+                                ${money(
+                                    finalPrice
+                                )}
+                            </div>
+                        `
+                }
+
+                <a
+                    class="amazon-link"
+                    href="${offer.url}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    View on Amazon ↗
+                </a>
+
+            </div>
+        `;
+    }
+
+
+    function recommendation(product) {
+        const best =
+            cheapestSource(product);
+
+        if (!best) {
+            return (
+                "No current market reference available."
+            );
+        }
+
+        const eg =
+            egyptCost(product);
+
+        const ae =
+            uaeCost(product);
+
+        if (
+            Number.isFinite(eg) &&
+            Number.isFinite(ae)
+        ) {
+            const diff =
+                Math.abs(
+                    eg - ae
+                );
+
+            return (
+                `${best === "egypt"
+                    ? "Egypt"
+                    : "UAE"} currently has the lower reference price by approximately ${money(diff)}.`
+            );
+        }
+
+        return (
+            `${best === "egypt"
+                ? "Egypt"
+                : "UAE"} is currently the only available Amazon reference.`
+        );
+    }
+
+
+    function sourceButton(
+        product,
+        source,
+        label
+    ) {
+        const current =
+            selectedSource(product);
+
+        let disabled = false;
+
+        if (
+            source === "egypt" &&
+            !available(product.egypt)
+        ) {
+            disabled = true;
+        }
+
+        if (
+            source === "uae" &&
+            !available(product.uae)
+        ) {
+            disabled = true;
+        }
+
+        return `
+            <button
+                class="
+                    source-button
+                    ${
+                        current === source
+                            ? "active"
+                            : ""
+                    }
+                "
+                data-source="${source}"
+                data-product="${product.id}"
+                ${disabled
+                    ? "disabled"
+                    : ""}
+            >
+                ${label}
+            </button>
+        `;
+    }
+
+
+    function localOfferHTML(product) {
+        if (!product.localOffer || !product.localOffer.available) {
+            return "";
+        }
+
+        return `
+            <div class="local-offer-card">
+
+                <div class="local-offer-top">
+                    <span class="local-badge">
+                        ${product.localOffer.label || "LOCAL OPTION"}
+                    </span>
+
+                    <span class="local-seller">
+                        ${product.localOffer.seller}
+                    </span>
+                </div>
+
+                <div class="local-price">
+                    ${money(product.localOffer.price)}
+                </div>
+
+                <div class="market-converted">
+                    Complete-build budget reference
+                </div>
+
+                <div class="local-note">
+                    Final components and availability will be
+                    confirmed with the supplier before purchase.
+                </div>
+
+            </div>
+        `;
+    }
+
+    function productCard(product) {
+        const isIncluded =
+            included(product);
+
+        return `
+            <article
+                class="
+                    product-card
+                    ${
+                        isIncluded
+                            ? "included"
+                            : "excluded"
+                    }
+                "
+                id="product-${product.id}"
+            >
+
+                <div class="product-main">
+
+                    <div>
+
+                        <div
+                            class="
+                                product-category
+                            "
+                        >
+                            ${product.category}
+                        </div>
+
+                        <h3
+                            class="
+                                product-name
+                            "
+                        >
+                            ${product.name}
+                        </h3>
+
+                        <div
+                            class="
+                                product-model
+                            "
+                        >
+                            ${product.model}
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="
+                            inclusion-button
+                            ${
+                                isIncluded
+                                    ? "on"
+                                    : ""
+                            }
+                        "
+                        data-toggle-inclusion="
+                            ${product.id}
+                        "
+                    >
+                        ${
+                            isIncluded
+                                ? "● INCLUDED"
+                                : "○ NOT INCLUDED"
+                        }
+                    </button>
+
+                </div>
+
+
+                ${localOfferHTML(product)}
+
+                <div class="price-row">
+
+                    ${
+                        marketOffer(
+                            product,
+                            "egypt"
+                        )
+                    }
+
+                    ${
+                        marketOffer(
+                            product,
+                            "uae"
+                        )
+                    }
+
+                </div>
+
+
+                <div class="source-row">
+
+                    <span
+                        class="source-label"
+                    >
+                        Purchase source
+                    </span>
+
+                    <div
+                        class="source-buttons"
+                    >
+
+                        ${
+                            sourceButton(
+                                product,
+                                "undecided",
+                                "Undecided"
+                            )
+                        }
+
+                        ${
+                            sourceButton(
+                                product,
+                                "egypt",
+                                "Egypt"
+                            )
+                        }
+
+                        ${
+                            sourceButton(
+                                product,
+                                "uae",
+                                "UAE"
+                            )
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <div class="recommendation">
+                    ${recommendation(product)}
+                </div>
+
+
+                <details
+                    class="product-details"
+                >
+
+                    <summary>
+                        Details +
+                    </summary>
+
+                    <div
+                        class="
+                            details-content
+                        "
+                    >
+
+                        <p>
+                            ${product.description}
+                        </p>
+
+                        <ul>
+                            ${
+                                product
+                                    .specifications
+                                    .map(
+                                        spec =>
+                                            `<li>${spec}</li>`
+                                    )
+                                    .join("")
+                            }
+                        </ul>
+
+                        <p>
+                            Quantity:
+                            ${product.quantity || 1}
+                        </p>
+
+                        <p>
+                            Price checked:
+                            ${product.lastChecked}
+                        </p>
+
+                    </div>
+
+                </details>
+
+            </article>
+        `;
+    }
+
+
+    function attachProductControls(
+        sectionKey
+    ) {
+        document
+            .querySelectorAll(
+                "[data-toggle-inclusion]"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const id =
+                            button.dataset
+                                .toggleInclusion
+                                .trim();
+
+                        const product =
+                            config
+                                .sections[
+                                    sectionKey
+                                ]
+                                .products
+                                .find(
+                                    p =>
+                                        p.id === id
+                                );
+
+                        state.included[id] =
+                            !included(product);
+
+                        saveState();
+
+                        rerenderSection(
+                            sectionKey
+                        );
+                    }
+                );
+            });
+
+
+        document
+            .querySelectorAll(
+                "[data-source]"
+            )
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        if (button.disabled) {
+                            return;
+                        }
+
+                        const id =
+                            button.dataset
+                                .product;
+
+                        state.source[id] =
+                            button.dataset
+                                .source;
+
+                        saveState();
+
+                        rerenderSection(
+                            sectionKey
+                        );
+                    }
+                );
+            });
+    }
+
+
+    function rerenderSection(key) {
+        const y =
+            window.scrollY;
+
+        renderSection(
+            key,
+            false
+        );
+
+        requestAnimationFrame(
+            () => {
+                window.scrollTo({
+                    top: y,
+                    behavior: "instant"
+                });
+            }
+        );
+    }
+
+
+    function renderSection(
+        key,
+        scroll = true
+    ) {
+        currentSection = key;
+
+        const section =
+            config.sections[key];
+
+        document.getElementById(
+            "sectionEyebrow"
+        ).textContent =
+            section.eyebrow;
+
+        document.getElementById(
+            "sectionTitle"
+        ).textContent =
+            section.title;
+
+        document.getElementById(
+            "sectionDescription"
+        ).textContent =
+            section.description;
+
+
+        renderLocalBuild(section);
+        renderOwned(section);
+
+
+        const target =
+            sectionTarget(section);
+
+        const includedCount =
+            section.products
+                .filter(included)
+                .length;
+
+
+        document.getElementById(
+            "sectionHeroStats"
+        ).innerHTML = `
+            <span class="metric-label">
+                Current Target
+            </span>
+
+            <span class="metric-value">
+                ${money(target)}
+            </span>
+
+            <span class="funding-small">
+                ${includedCount}
+                items included
+            </span>
+        `;
+
+
+        document.getElementById(
+            "productGrid"
+        ).innerHTML =
+            section.products
+                .map(productCard)
+                .join("");
+
+
+        document.getElementById(
+            "sectionSummary"
+        ).innerHTML = `
+            <div class="summary-card">
+
+                <div
+                    class="metric-grid"
+                >
+
+                    <div>
+                        <span
+                            class="
+                                metric-label
+                            "
+                        >
+                            Section Target
+                        </span>
+
+                        <span
+                            class="
+                                metric-value
+                            "
+                        >
+                            ${money(target)}
+                        </span>
+                    </div>
+
+                    <div>
+                        <span
+                            class="
+                                metric-label
+                            "
+                        >
+                            Included
+                        </span>
+
+                        <span
+                            class="
+                                metric-value
+                            "
+                        >
+                            ${includedCount}
+                        </span>
+                    </div>
+
+                    <div>
+                        <span
+                            class="
+                                metric-label
+                            "
+                        >
+                            AED Rate
+                        </span>
+
+                        <span
+                            class="
+                                metric-value
+                            "
+                        >
+                            ${rate.toFixed(2)}
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="notice">
+                    Undecided items use the
+                    cheapest currently available
+                    market reference when estimating
+                    the funding target. No purchase
+                    source is selected automatically.
+                </div>
+
+            </div>
+        `;
+
+
+        attachProductControls(key);
+
+        showView(
+            "products",
+            scroll
+        );
+
+        updateGlobalFunding();
+    }
+
+
+    function updateGlobalFunding() {
+        const f =
+            fundingNumbers();
+
+        const content = `
+            <div class="metric-grid">
+
+                <div>
+                    <span
+                        class="metric-label"
+                    >
+                        Music
+                    </span>
+
+                    <span
+                        class="metric-value"
+                    >
                         ${money(f.music)}
                     </span>
                 </div>
 
-                <div class="metric">
-                    <span class="metric-label">
-                        Coding Target
+                <div>
+                    <span
+                        class="metric-label"
+                    >
+                        Coding
                     </span>
 
-                    <span class="metric-value">
+                    <span
+                        class="metric-value"
+                    >
                         ${money(f.coding)}
                     </span>
                 </div>
 
-                <div class="metric">
-                    <span class="metric-label">
-                        Overall Target
+                <div>
+                    <span
+                        class="metric-label"
+                    >
+                        Overall
                     </span>
 
-                    <span class="metric-value">
+                    <span
+                        class="metric-value"
+                    >
                         ${money(f.target)}
                     </span>
                 </div>
 
             </div>
 
-            <div class="progress">
-
+            <div class="progress-track">
                 <div
-                    class="progress-bar"
+                    class="progress-fill"
                     style="
                         width:
                         ${f.percent}%
                     "
                 ></div>
-
             </div>
 
-            <small>
+            <div class="funding-small">
                 ${money(f.raised)}
-                confirmed raised
-                ·
+                raised ·
                 ${money(f.remaining)}
-                remaining
-                ·
+                remaining ·
                 ${f.percent.toFixed(1)}%
                 funded
-            </small>
+            </div>
         `;
+
+
+        document.getElementById(
+            "globalFunding"
+        ).innerHTML =
+            content;
+
+
+        document.getElementById(
+            "homeFundingCard"
+        ).innerHTML = `
+            <span class="metric-label">
+                Overall Development Goal
+            </span>
+
+            <span class="metric-value">
+                ${money(f.target)}
+            </span>
+
+            <div class="progress-track">
+                <div
+                    class="progress-fill"
+                    style="
+                        width:
+                        ${f.percent}%
+                    "
+                ></div>
+            </div>
+
+            <div class="funding-small">
+                ${f.percent.toFixed(1)}%
+                funded
+            </div>
+        `;
+
+        updateMobileFunding();
     }
 
+
+    function updateMobileFunding() {
+        const f =
+            fundingNumbers();
+
+        let label =
+            "Overall Goal";
+
+        let value =
+            f.target;
+
+        if (currentSection) {
+            label =
+                currentSection === "music"
+                    ? "Music Goal"
+                    : "Coding Goal";
+
+            value =
+                currentSection === "music"
+                    ? f.music
+                    : f.coding;
+        }
+
+        document.getElementById(
+            "mobileFundingBar"
+        ).innerHTML = `
+            <div>
+                <div
+                    class="
+                        mobile-funding-label
+                    "
+                >
+                    ${label}
+                </div>
+
+                <div
+                    class="
+                        mobile-funding-value
+                    "
+                >
+                    ${money(value)}
+                </div>
+            </div>
+
+            <button
+                id="mobileContributeBtn"
+                class="primary-button"
+            >
+                Contribute
+            </button>
+        `;
+
+        document.getElementById(
+            "mobileContributeBtn"
+        ).addEventListener(
+            "click",
+            renderFunding
+        );
+    }
+
+
     function renderFunding() {
-        const f = fundingNumbers();
+        currentSection = null;
+
+        const f =
+            fundingNumbers();
 
         const hasInstaPay =
-            config.funding.instapayUrl &&
-            config.funding.instapayUrl
+            config.funding
+                .instapayUrl &&
+            config.funding
+                .instapayUrl
                 .startsWith("http");
+
 
         document.getElementById(
             "fundingDetails"
         ).innerHTML = `
+            <div class="funding-card">
 
-            <div class="funding-box">
+                <div
+                    class="metric-grid"
+                >
 
-                <div class="funding-grid">
-
-                    <div class="metric">
-                        <span class="metric-label">
-                            Overall Target
+                    <div>
+                        <span
+                            class="
+                                metric-label
+                            "
+                        >
+                            Target
                         </span>
 
-                        <span class="metric-value">
+                        <span
+                            class="
+                                metric-value
+                            "
+                        >
                             ${money(f.target)}
                         </span>
                     </div>
 
-                    <div class="metric">
-                        <span class="metric-label">
-                            Confirmed Raised
+                    <div>
+                        <span
+                            class="
+                                metric-label
+                            "
+                        >
+                            Raised
                         </span>
 
-                        <span class="metric-value">
+                        <span
+                            class="
+                                metric-value
+                            "
+                        >
                             ${money(f.raised)}
                         </span>
                     </div>
 
-                    <div class="metric">
-                        <span class="metric-label">
+                    <div>
+                        <span
+                            class="
+                                metric-label
+                            "
+                        >
                             Remaining
                         </span>
 
-                        <span class="metric-value">
+                        <span
+                            class="
+                                metric-value
+                            "
+                        >
                             ${money(f.remaining)}
                         </span>
                     </div>
 
                 </div>
 
-                <div class="progress">
 
+                <div
+                    class="progress-track"
+                >
                     <div
-                        class="progress-bar"
+                        class="progress-fill"
                         style="
                             width:
                             ${f.percent}%
                         "
                     ></div>
-
                 </div>
 
-                <p>
-                    ${f.percent.toFixed(1)}%
-                    funded
-                </p>
 
                 ${
                     hasInstaPay
-                    ? `
-                        <a
-                            class="contribute-button"
-                            href="${
-                                config.funding
-                                    .instapayUrl
-                            }"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Contribute with InstaPay ↗
-                        </a>
-                    `
-                    : `
-                        <p class="warning">
-                            InstaPay contribution
-                            link has not been
-                            configured yet.
-                        </p>
-                    `
+                        ? `
+                            <a
+                                class="
+                                    contribute-link
+                                "
+                                href="${
+                                    config
+                                        .funding
+                                        .instapayUrl
+                                }"
+                                target="_blank"
+                                rel="
+                                    noopener
+                                    noreferrer
+                                "
+                            >
+                                Contribute with
+                                InstaPay ↗
+                            </a>
+                        `
+                        : `
+                            <div
+                                class="notice"
+                            >
+                                InstaPay contribution
+                                link has not been
+                                configured yet.
+                            </div>
+                        `
                 }
 
-                <p class="warning">
-                    The dashboard does not process
+
+                <div class="notice">
+                    This website does not process
                     payments or collect banking
-                    credentials. Funding is updated
-                    only after a contribution is
+                    credentials. The raised amount
+                    changes only after funds are
                     confirmed received.
-                </p>
+                </div>
 
             </div>
         `;
@@ -942,10 +1513,12 @@
         showView("funding");
     }
 
-    document
-        .querySelectorAll("[data-section]")
-        .forEach(button => {
 
+    document
+        .querySelectorAll(
+            "[data-section]"
+        )
+        .forEach(button => {
             button.addEventListener(
                 "click",
                 () => {
@@ -956,39 +1529,72 @@
             );
         });
 
-    document
-        .getElementById("homeBtn")
-        .addEventListener(
-            "click",
-            () => showView("home")
-        );
 
     document
-        .getElementById("backBtn")
-        .addEventListener(
-            "click",
-            () => showView("home")
-        );
+        .querySelectorAll(
+            "[data-nav-section]"
+        )
+        .forEach(button => {
+            button.addEventListener(
+                "click",
+                () => {
+                    renderSection(
+                        button.dataset
+                            .navSection
+                    );
+                }
+            );
+        });
 
-    document
-        .getElementById("fundBackBtn")
-        .addEventListener(
-            "click",
-            () => showView("home")
-        );
 
-    document
-        .getElementById("fundBtn")
-        .addEventListener(
-            "click",
-            renderFunding
-        );
+    document.getElementById(
+        "homeBtn"
+    ).addEventListener(
+        "click",
+        () => {
+            currentSection = null;
+            showView("home");
+        }
+    );
+
+
+    document.getElementById(
+        "backBtn"
+    ).addEventListener(
+        "click",
+        () => {
+            currentSection = null;
+            showView("home");
+        }
+    );
+
+
+    document.getElementById(
+        "fundBackBtn"
+    ).addEventListener(
+        "click",
+        () => {
+            currentSection = null;
+            showView("home");
+        }
+    );
+
+
+    document.getElementById(
+        "fundBtn"
+    ).addEventListener(
+        "click",
+        renderFunding
+    );
+
 
     document.getElementById(
         "exchangeDisplay"
     ).textContent =
         `1 AED ≈ ${rate.toFixed(2)} EGP`;
 
-    renderGlobalFunding();
 
+    updateGlobalFunding();
 })();
+
+

@@ -40,21 +40,21 @@
                     details: "Studio speakers for playback and monitoring."
                 },
                 {
-                    name: "Microphone Boom Arm / Stand",
+                    name: "Boom Arm / Stand",
                     model: "Already owned",
-                    category: "RECORDING ACCESSORY",
+                    category: "MICROPHONE ACCESSORY",
                     details: "Adjustable microphone support."
                 },
                 {
-                    name: "Microphone Pop Filter",
+                    name: "Pop Filter",
                     model: "Already owned",
-                    category: "RECORDING ACCESSORY",
+                    category: "MICROPHONE ACCESSORY",
                     details: "Pop filter for vocal recording."
                 },
                 {
-                    name: "3 m XLR Microphone Cable",
+                    name: "3 m XLR Cable",
                     model: "Already owned",
-                    category: "RECORDING ACCESSORY",
+                    category: "MICROPHONE ACCESSORY",
                     details: "Balanced XLR microphone cable."
                 }
             ],
@@ -389,293 +389,471 @@
 
         coding: {
             title: "Coding Development",
-            eyebrow: "CODING & AI DEVELOPMENT",
-            description:
-                "A value-focused desktop workstation and workspace for software development, CUDA and local AI.",
 
-            owned: [],
+            eyebrow: "CODING & AI DEVELOPMENT",
+
+            description:
+                "Funding a capable software-development and local-AI workstation. Amazon listings are market references used to establish expected equipment costs; final purchases may come from Computer Mall or another trusted supplier.",
+
+            localBuild: {
+                enabled: true,
+
+                title: "PC Assembly Budget",
+
+                priceEGP: 60000,
+
+                source: "Mall el Bustan",
+
+                location: "Egypt",
+
+                description:
+                    "A complete coding and local-AI workstation can be assembled locally within this target budget. Final components will be selected at purchase time based on availability, compatibility and best value.",
+
+                requirements: [
+                    "NVIDIA CUDA GPU",
+                    "12 GB VRAM minimum",
+                    "16 GB VRAM preferred",
+                    "32 GB system RAM minimum",
+                    "Modern multi-core processor",
+                    "1 TB+ NVMe SSD",
+                    "Reliable branded power supply",
+                    "Upgradeable platform preferred"
+                ]
+            },
+            owned: [
+                {
+                    name: "Lenovo IdeaPad L340-15IRH Gaming",
+                    model: "81LK",
+                    category: "CURRENT CODING MACHINE",
+                    details:
+                        "Intel Core i5-9300H • NVIDIA GTX 1650 4 GB • 8 GB RAM • Existing development machine"
+                }
+            ],
 
             products: [
+
+                // =================================================
+                // COMPLETE LOCAL BUILD
+                // =================================================
+
                 {
-                    id: "cpu",
-                    category: "PC",
-                    name: "Value-Focused Desktop CPU",
-                    model: "Ryzen 7-class target",
+                    id: "coding-gpu",
+
+                    category: "COMPONENT REFERENCE",
+
+                    name: "NVIDIA 16 GB AI GPU",
+
+                    model: "ASUS 16 GB-class GPU reference",
+
                     description:
-                        "Strong multi-core CPU without spending unnecessarily on a flagship processor.",
+                        "Market-price reference for the most important AI component. The target is an NVIDIA CUDA GPU with approximately 16 GB of VRAM; the Egypt and UAE references may represent different suitable models.",
+
                     specifications: [
-                        "AM5 preferred",
-                        "Ryzen 7 class",
-                        "Strong development performance"
+                        "NVIDIA CUDA required",
+                        "16 GB VRAM target",
+                        "Local AI / PyTorch",
+                        "faster-whisper",
+                        "Demucs",
+                        "Transformers",
+                        "Ollama/local model workloads",
+                        "Reference listings do not need to be identical models"
                     ],
-                    status: "needed",
+
+                    status: "optional",
+
                     quantity: 1,
+
                     lastChecked: "2026-08-21",
 
                     egypt: {
                         available: true,
-                        price: 16000,
+                        price: 36522.44,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.eg/"
+                        url: "https://www.amazon.eg/dp/B0F7WB6LSH"
                     },
 
                     uae: {
                         available: true,
-                        price: 950,
+                        price: 2839.55,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.ae/"
+                        url: "https://www.amazon.ae/dp/B0F4DVKSZ4"
                     }
                 },
 
+
+                // =================================================
+                // CPU REFERENCE
+                // =================================================
+
                 {
-                    id: "gpu",
-                    category: "PC",
-                    name: "NVIDIA CUDA GPU",
-                    model: "16 GB VRAM preferred",
+                    id: "coding-cpu",
+
+                    category: "COMPONENT REFERENCE",
+
+                    name: "Ryzen 7-Class Processor",
+
+                    model: "Modern multi-core development CPU reference",
+
                     description:
-                        "GPU prioritized for local AI, CUDA, PyTorch, Whisper and model inference.",
+                        "Price references for the processor class required by the development workstation. Final CPU will be selected together with a compatible motherboard and RAM platform.",
+
                     specifications: [
-                        "NVIDIA",
-                        "CUDA",
-                        "16 GB VRAM preferred",
-                        "12 GB considered if substantially cheaper"
+                        "8-core class target",
+                        "Strong software development performance",
+                        "Docker and multitasking",
+                        "CPU-heavy audio processing",
+                        "Final CPU/motherboard/RAM must use a compatible platform",
+                        "Egypt reference: Ryzen 7 5800X",
+                        "UAE reference: Ryzen 7 7700X"
                     ],
-                    status: "needed",
+
+                    status: "optional",
+
                     quantity: 1,
+
                     lastChecked: "2026-08-21",
 
                     egypt: {
                         available: true,
-                        price: 40000,
+                        price: 12800,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.eg/"
+                        url: "https://www.amazon.eg/dp/B0815XFSGK"
                     },
 
                     uae: {
                         available: true,
-                        price: 2300,
+                        price: 831.69,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.ae/"
+                        url: "https://www.amazon.ae/dp/B0BBHHT8LY"
                     }
                 },
 
+
+                // =================================================
+                // MOTHERBOARD REFERENCE
+                // =================================================
+
                 {
-                    id: "motherboard",
-                    category: "PC",
-                    name: "AM5 Motherboard",
-                    model: "B650-class target",
+                    id: "coding-motherboard",
+
+                    category: "COMPONENT REFERENCE",
+
+                    name: "MSI B850M Gaming WiFi Motherboard",
+
+                    model: "B850M / AM5-class platform reference",
+
                     description:
-                        "Reliable motherboard without paying for unnecessary enthusiast features.",
+                        "Modern motherboard reference for an upgradeable DDR5 development workstation.",
+
                     specifications: [
-                        "AM5",
+                        "Modern AMD platform",
                         "DDR5",
-                        "2+ M.2 slots preferred"
+                        "NVMe storage support",
+                        "Wi-Fi",
+                        "Final motherboard must match the selected CPU"
                     ],
-                    status: "needed",
+
+                    status: "optional",
+
                     quantity: 1,
+
                     lastChecked: "2026-08-21",
 
                     egypt: {
                         available: true,
-                        price: 9000,
+                        price: 9599.94,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.eg/"
+                        url: "https://www.amazon.eg/dp/B096Y414R3"
                     },
 
                     uae: {
                         available: true,
-                        price: 500,
+                        price: 697.69,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.ae/"
+                        url: "https://www.amazon.ae/dp/B096Y414R3"
                     }
                 },
 
+
+                // =================================================
+                // RAM REFERENCE
+                // =================================================
+
                 {
-                    id: "desktop-ram",
-                    category: "PC",
-                    name: "32 GB DDR5 RAM",
-                    model: "2 × 16 GB",
+                    id: "coding-ram",
+
+                    category: "COMPONENT REFERENCE",
+
+                    name: "32 GB Corsair Vengeance DDR5",
+
+                    model: "32 GB DDR5-6000 desktop memory reference",
+
                     description:
-                        "Practical initial memory capacity with room to upgrade later.",
+                        "Desktop DDR5 memory reference for the development workstation.",
+
                     specifications: [
-                        "32 GB",
-                        "2 × 16 GB",
-                        "DDR5"
+                        "32 GB total target",
+                        "2 × 16 GB target",
+                        "DDR5",
+                        "6000 MT/s class",
+                        "Desktop memory",
+                        "Final kit must be compatible with selected motherboard/CPU"
                     ],
-                    status: "needed",
+
+                    status: "optional",
+
                     quantity: 1,
+
                     lastChecked: "2026-08-21",
 
                     egypt: {
                         available: true,
-                        price: 5000,
+                        price: 33999,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.eg/"
+                        url: "https://www.amazon.eg/dp/B0DZ935RX9"
                     },
 
                     uae: {
                         available: true,
-                        price: 280,
+                        price: 1945,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.ae/"
+                        url: "https://www.amazon.ae/dp/B0GGJ79NR3"
                     }
                 },
 
+
+                // =================================================
+                // STORAGE REFERENCE
+                // =================================================
+
                 {
-                    id: "nvme",
-                    category: "PC",
-                    name: "2 TB NVMe SSD",
-                    model: "Value NVMe target",
+                    id: "coding-storage",
+
+                    category: "COMPONENT REFERENCE",
+
+                    name: "2 TB Crucial NVMe SSD",
+
+                    model: "2 TB NVMe storage reference",
+
                     description:
-                        "Primary storage for development environments, AI models and active projects.",
+                        "High-capacity primary storage reference for development environments, AI models, datasets and active projects.",
+
                     specifications: [
-                        "2 TB",
-                        "M.2 NVMe"
+                        "2 TB target",
+                        "M.2 NVMe",
+                        "Primary workstation storage",
+                        "Reference listings may represent different Crucial generations"
                     ],
-                    status: "needed",
+
+                    status: "optional",
+
                     quantity: 1,
+
                     lastChecked: "2026-08-21",
 
                     egypt: {
                         available: true,
-                        price: 6500,
+                        price: 12600,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.eg/"
+                        url: "https://www.amazon.eg/dp/B0B25MJ1YT"
                     },
 
                     uae: {
                         available: true,
-                        price: 360,
+                        price: 973.09,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.ae/"
+                        url: "https://www.amazon.ae/dp/B0DC8RVRBZ"
                     }
                 },
 
+
+                // =================================================
+                // PSU REFERENCE
+                // =================================================
+
                 {
-                    id: "psu",
-                    category: "PC",
-                    name: "Quality 750–850 W PSU",
-                    model: "ATX 3.x target",
+                    id: "coding-psu",
+
+                    category: "COMPONENT REFERENCE",
+
+                    name: "MSI 750 W Power Supply",
+
+                    model: "750 W quality PSU reference",
+
                     description:
-                        "Reliable PSU appropriately sized for the final NVIDIA GPU.",
+                        "Reliable power-supply reference for the workstation. Final wattage must be appropriate for the selected GPU.",
+
                     specifications: [
-                        "750–850 W",
-                        "80 Plus Gold preferred",
-                        "ATX 3.x preferred"
+                        "750 W class",
+                        "Reputable manufacturer",
+                        "80 Plus Gold-class target",
+                        "Final PSU must be sized for GPU",
+                        "Avoid generic power supplies"
                     ],
-                    status: "needed",
+
+                    status: "optional",
+
                     quantity: 1,
+
                     lastChecked: "2026-08-21",
 
                     egypt: {
                         available: true,
-                        price: 5500,
+                        price: 5690,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.eg/"
+                        url: "https://www.amazon.eg/dp/B0CC3QBGDL"
                     },
 
                     uae: {
                         available: true,
-                        price: 310,
+                        price: 319.14,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.ae/"
+                        url: "https://www.amazon.ae/dp/B0BSLJMCRP"
                     }
                 },
 
+
+                // =================================================
+                // COOLER REFERENCE
+                // =================================================
+
                 {
-                    id: "cooler",
-                    category: "PC",
-                    name: "Value Air CPU Cooler",
-                    model: "AM5 compatible",
+                    id: "coding-cooler",
+
+                    category: "COMPONENT REFERENCE",
+
+                    name: "Cooler Master CPU Air Cooler",
+
+                    model: "AM5-compatible air-cooling reference",
+
                     description:
-                        "Reliable air cooling without unnecessary liquid-cooling expense.",
+                        "Value-focused air-cooling reference. No expensive liquid cooling is required for the funding target.",
+
                     specifications: [
-                        "AM5 compatible",
-                        "Air cooler",
-                        "CPU clearance must match case"
+                        "Air cooling",
+                        "AM5 compatibility target",
+                        "Final cooler must match CPU socket",
+                        "Case clearance must be checked"
                     ],
-                    status: "needed",
+
+                    status: "optional",
+
                     quantity: 1,
+
                     lastChecked: "2026-08-21",
 
                     egypt: {
                         available: true,
-                        price: 2500,
+                        price: 1699,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.eg/"
+                        url: "https://www.amazon.eg/dp/B0FXJZG91W"
                     },
 
                     uae: {
                         available: true,
-                        price: 150,
+                        price: 109.40,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.ae/"
+                        url: "https://www.amazon.ae/dp/B0CGJ1J5KL"
                     }
                 },
 
+
+                // =================================================
+                // CASE REFERENCE
+                // =================================================
+
                 {
-                    id: "case",
-                    category: "PC",
-                    name: "High-Airflow PC Case",
-                    model: "Value ATX/mATX chassis",
+                    id: "coding-case",
+
+                    category: "COMPONENT REFERENCE",
+
+                    name: "Airflow PC Case",
+
+                    model: "ATX/mATX airflow case reference",
+
                     description:
-                        "Simple case with good airflow and enough GPU clearance.",
+                        "Representative case pricing. Final case will be selected based on motherboard size, GPU clearance and airflow.",
+
                     specifications: [
                         "Good airflow",
                         "GPU clearance",
-                        "Compatible motherboard size"
+                        "Motherboard compatibility",
+                        "No premium/RGB requirement",
+                        "Egypt reference: Havit CF923",
+                        "UAE reference: Tortox Nimbus"
                     ],
-                    status: "needed",
+
+                    status: "optional",
+
                     quantity: 1,
+
                     lastChecked: "2026-08-21",
 
                     egypt: {
                         available: true,
-                        price: 4000,
+                        price: 3500,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.eg/"
+                        url: "https://www.amazon.eg/dp/B0GHYY8QMH"
                     },
 
                     uae: {
                         available: true,
-                        price: 225,
+                        price: 199,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.ae/"
+                        url: "https://www.amazon.ae/dp/B0GWXN23PY"
                     }
                 },
 
+
+                // =================================================
+                // DESK - SEPARATE FROM PC BUILD
+                // =================================================
+
                 {
-                    id: "desk",
+                    id: "coding-desk",
+
                     category: "WORKSPACE",
-                    name: "Computer / Development Desk",
-                    model: "Value workstation desk",
+
+                    name: "Development Computer Desk",
+
+                    model: "120–160 cm workstation desk target",
+
                     description:
-                        "Stable workspace for the computer, displays and development equipment.",
+                        "Desk for the coding/AI workstation. This requirement is independent of whether the computer is assembled locally or purchased from individual components.",
+
                     specifications: [
-                        "120–160 cm width target",
-                        "60+ cm depth preferred",
                         "Stable construction",
-                        "Gaming branding not required"
+                        "120–160 cm width target",
+                        "60 cm+ depth preferred",
+                        "Enough space for computer and displays",
+                        "Egypt reference: CubiCubi desk",
+                        "UAE reference: Portal-AE desk",
+                        "Local purchase may be preferable because of transport size"
                     ],
+
                     status: "needed",
+
                     quantity: 1,
+
                     lastChecked: "2026-08-21",
 
                     egypt: {
                         available: true,
-                        price: 5000,
+                        price: 2499,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.eg/"
+                        url: "https://www.amazon.eg/dp/B09DV958KK"
                     },
 
                     uae: {
                         available: true,
-                        price: 300,
+                        price: 150.51,
                         extraCostsEGP: 0,
-                        url: "https://www.amazon.ae/"
+                        url: "https://www.amazon.ae/dp/B0DYPB8HCQ"
                     }
                 }
             ]
         }
     }
 };
+
+
