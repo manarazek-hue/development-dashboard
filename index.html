@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Music and coding development funding dashboard">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Music and coding development purchasing and funding dashboard"
+    >
+
     <title>Development Dashboard</title>
+
     <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -12,103 +22,578 @@
 <body>
 
 <header class="topbar">
-    <button id="homeBtn" class="brand">Development Dashboard</button>
+
+    <button id="homeBtn" class="brand">
+        <span class="brand-mark">D</span>
+        <span>Development Dashboard</span>
+    </button>
+
+    <nav class="desktop-nav">
+        <button data-nav-section="music">
+            Music
+        </button>
+
+        <button data-nav-section="coding">
+            Coding
+        </button>
+    </nav>
 
     <div class="top-actions">
-        <span id="exchangeDisplay"></span>
-        <button id="fundBtn" class="fund-small">Contribute</button>
+
+        <span
+            id="exchangeDisplay"
+            class="exchange"
+        ></span>
+
+        <button id="fundBtn" class="primary-button">
+            Contribute
+        </button>
+
     </div>
+
 </header>
+
 
 <main>
 
-<section id="homeView" class="view active">
+    <!-- HOME -->
 
-    <div class="hero">
-        <p class="eyebrow">DEVELOPMENT ROADMAP</p>
-        <h1>Choose a development path</h1>
+    <section id="homeView" class="view active">
 
-        <p class="hero-description">
-            Compare equipment from Amazon Egypt and Amazon UAE,
-            track purchases and contribute toward the development goal.
-        </p>
-    </div>
+        <div class="home-hero">
 
-    <div class="choice-grid">
+            <div>
+                <p class="eyebrow">
+                    DEVELOPMENT ROADMAP
+                </p>
 
-        <button class="choice-card music-card" data-section="music">
-            <span class="choice-icon">♪</span>
-            <span class="choice-label">Music</span>
-            <span class="choice-title">Music Development</span>
-            <span class="choice-description">
-                Recording, production and studio equipment.
-            </span>
-            <span class="open-label">Open Development Plan →</span>
+                <h1>
+                    Build the next
+                    <span>development setup.</span>
+                </h1>
+
+                <p class="lead">
+                    Track existing equipment, compare
+                    market prices and fund the next
+                    music and coding upgrades.
+                </p>
+            </div>
+
+            <div
+                id="homeFundingCard"
+                class="hero-funding"
+            ></div>
+
+        </div>
+
+
+        <div class="path-grid">
+
+            <button
+                class="path-card music-path"
+                data-section="music"
+            >
+                <div class="path-icon">♪</div>
+
+                <div>
+                    <span class="path-type">
+                        MUSIC
+                    </span>
+
+                    <h2>
+                        Music Development
+                    </h2>
+
+                    <p>
+                        Recording, production,
+                        DJ equipment and laptop upgrades.
+                    </p>
+                </div>
+
+                <span class="path-arrow">→</span>
+            </button>
+
+
+            <button
+                class="path-card coding-path"
+                data-section="coding"
+            >
+                <div class="path-icon">
+                    &lt;/&gt;
+                </div>
+
+                <div>
+                    <span class="path-type">
+                        CODING
+                    </span>
+
+                    <h2>
+                        Coding Development
+                    </h2>
+
+                    <p>
+                        Build a capable development
+                        and local AI workstation.
+                    </p>
+                </div>
+
+                <span class="path-arrow">→</span>
+            </button>
+
+        </div>
+
+        <div id="globalFunding"></div>
+
+    </section>
+
+
+    <!-- PRODUCTS -->
+
+    <section id="productsView" class="view">
+
+        <button id="backBtn" class="back-button">
+            ← Dashboard
         </button>
 
-        <button class="choice-card coding-card" data-section="coding">
-            <span class="choice-icon">&lt;/&gt;</span>
-            <span class="choice-label">Coding</span>
-            <span class="choice-title">Coding Development</span>
-            <span class="choice-description">
-                Build a powerful development and AI workstation.
-            </span>
-            <span class="open-label">Open Development Plan →</span>
+        <div class="section-hero">
+
+            <div>
+                <p
+                    id="sectionEyebrow"
+                    class="eyebrow"
+                ></p>
+
+                <h1 id="sectionTitle"></h1>
+
+                <p
+                    id="sectionDescription"
+                    class="lead"
+                ></p>
+            </div>
+
+            <div
+                id="sectionHeroStats"
+                class="section-hero-stats"
+            ></div>
+
+        </div>
+
+
+        <div id="localBuildArea"></div>
+
+        <div id="ownedArea"></div>
+
+
+        <div class="roadmap-header">
+
+            <div>
+                <p class="eyebrow">
+                    DEVELOPMENT ROADMAP
+                </p>
+
+                <h2>
+                    Planned Equipment
+                </h2>
+
+                <p>
+                    Include only what you want
+                    counted toward the goal.
+                </p>
+            </div>
+
+            <div class="legend">
+                <span>
+                    <i class="dot green"></i>
+                    Included
+                </span>
+
+                <span>
+                    <i class="dot gray"></i>
+                    Not included
+                </span>
+            </div>
+
+        </div>
+
+
+        <div id="productGrid"></div>
+
+        <div id="sectionSummary"></div>
+
+    </section>
+
+
+    <!-- FUNDING -->
+
+    <section id="fundingView" class="view">
+
+        <button id="fundBackBtn" class="back-button">
+            ← Dashboard
         </button>
 
-    </div>
+        <div class="section-hero">
 
-    <div id="globalFunding" class="global-funding"></div>
+            <div>
+                <p class="eyebrow">
+                    DEVELOPMENT FUND
+                </p>
 
-</section>
+                <h1>
+                    Support the roadmap
+                </h1>
 
+                <p class="lead">
+                    Contributions go toward
+                    equipment currently included
+                    in the development target.
+                </p>
+            </div>
 
-<section id="productsView" class="view">
+        </div>
 
-    <div class="section-header">
-        <button id="backBtn" class="back-button">← Dashboard</button>
+        <div id="fundingDetails"></div>
 
-        <p id="sectionEyebrow" class="eyebrow"></p>
-        <h1 id="sectionTitle"></h1>
-        <p id="sectionDescription"></p>
-    </div>
-
-    <div id="productGrid" class="product-grid"></div>
-
-    <div id="sectionSummary"></div>
-
-</section>
-
-
-<section id="fundingView" class="view">
-
-    <div class="section-header">
-        <button id="fundBackBtn" class="back-button">← Dashboard</button>
-
-        <p class="eyebrow">DEVELOPMENT FUND</p>
-        <h1>Support the development goal</h1>
-
-        <p>
-            Contributions help fund the equipment listed on this dashboard.
-        </p>
-    </div>
-
-    <div id="fundingDetails"></div>
-
-</section>
+    </section>
 
 </main>
 
+
+<div
+    id="mobileFundingBar"
+    class="mobile-funding-bar"
+></div>
+
+
 <footer>
+
     <p>
-        Prices are manually maintained and may differ from current Amazon prices.
-        Always verify price, shipping, taxes, customs and compatibility before purchasing.
+        Amazon Egypt and Amazon UAE prices are
+        market-reference prices maintained manually.
+        Always verify current pricing, seller,
+        availability, warranty, compatibility,
+        shipping, taxes and customs before purchase.
     </p>
+
 </footer>
+
+
+
+<!-- CONTRIBUTION PLEDGE MODAL -->
+
+<div
+    id="contributionModal"
+    class="modal-backdrop"
+    hidden
+>
+
+    <div
+        class="contribution-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="contributionTitle"
+    >
+
+        <button
+            id="closeContributionModal"
+            class="modal-close"
+            type="button"
+            aria-label="Close contribution form"
+        >
+            ×
+        </button>
+
+
+        <!-- FORM -->
+
+        <div id="pledgeFormView">
+
+            <p class="eyebrow">
+                SUPPORT THE ROADMAP
+            </p>
+
+            <h2 id="contributionTitle">
+                Guess the Check
+            </h2>
+
+            <p class="modal-lead">
+                How much would you like to contribute
+                toward the development roadmap?
+            </p>
+
+
+            <div
+                id="pledgeTargetSummary"
+                class="pledge-target-summary"
+            ></div>
+
+
+            <form id="contributionForm">
+
+                <div class="form-group">
+
+                    <label for="contributorName">
+                        Your name
+                    </label>
+
+                    <input
+                        id="contributorName"
+                        name="name"
+                        type="text"
+                        maxlength="100"
+                        autocomplete="name"
+                        placeholder="Enter your name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="contributionAmount">
+                        Guess the Check
+                    </label>
+
+                    <div class="amount-input">
+
+                        <input
+                            id="contributionAmount"
+                            name="amount"
+                            type="number"
+                            min="1"
+                            max="10000000"
+                            step="1"
+                            inputmode="decimal"
+                            placeholder="1000"
+                            required
+                        >
+
+                        <span>
+                            EGP
+                        </span>
+
+                    </div>
+
+                    <small>
+                        Enter the amount you would
+                        like to contribute.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="contributionPurpose">
+                        Contribution preference
+                    </label>
+
+                    <select
+                        id="contributionPurpose"
+                        name="purpose"
+                    >
+                        <option value="Wherever needed">
+                            Wherever needed
+                        </option>
+
+                        <option value="Music Development">
+                            Music Development
+                        </option>
+
+                        <option value="Coding Development">
+                            Coding Development
+                        </option>
+                    </select>
+
+                    <small>
+                        This records your preferred development area.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="contributorEmail">
+                        Email
+                        <span class="optional-label">
+                            optional
+                        </span>
+                    </label>
+
+                    <input
+                        id="contributorEmail"
+                        name="email"
+                        type="email"
+                        maxlength="254"
+                        autocomplete="email"
+                        placeholder="you@example.com"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="contributionMessage">
+                        Message
+                        <span class="optional-label">
+                            optional
+                        </span>
+                    </label>
+
+                    <textarea
+                        id="contributionMessage"
+                        name="message"
+                        rows="3"
+                        maxlength="500"
+                        placeholder="Add a message..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="pledge-notice">
+
+                    <strong>
+                        Contribution pledge only
+                    </strong>
+
+                    <p>
+                        No payment is collected by this
+                        form. Submitting records your
+                        intended contribution only.
+                        Payment methods will be added
+                        separately.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="pledgeError"
+                    class="form-error"
+                    hidden
+                ></div>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        id="cancelContribution"
+                        type="button"
+                        class="secondary-button"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-button submit-pledge"
+                    >
+                        Submit Pledge
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- SUCCESS -->
+
+        <div
+            id="pledgeSuccessView"
+            class="pledge-success"
+            hidden
+        >
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <p class="eyebrow">
+                PLEDGE RECEIVED
+            </p>
+
+            <h2>
+                Thank you,
+                <span id="successName"></span>
+            </h2>
+
+            <p>
+                Your contribution pledge has
+                been recorded.
+            </p>
+
+
+            <div class="pledge-receipt">
+
+                <div>
+                    <span>
+                        Contribution Pledge
+                    </span>
+
+                    <strong id="successAmount">
+                    </strong>
+                </div>
+
+                <div>
+                    <span>
+                        Reference
+                    </span>
+
+                    <strong id="successReference">
+                    </strong>
+                </div>
+
+                <div>
+                    <span>
+                        Date
+                    </span>
+
+                    <strong id="successDate">
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="pledge-notice">
+
+                <strong>
+                    No payment has been processed.
+                </strong>
+
+                <p>
+                    This confirmation records a pledge,
+                    not proof of payment or receipt
+                    of funds.
+                </p>
+
+            </div>
+
+
+            <button
+                id="finishContribution"
+                type="button"
+                class="primary-button full-button"
+            >
+                Done
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 <script src="data/config.js"></script>
 <script src="js/app.js"></script>
 
 </body>
 </html>
+
+
 
