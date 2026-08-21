@@ -1367,7 +1367,7 @@
             "mobileContributeBtn"
         ).addEventListener(
             "click",
-            renderFunding
+            openContributionModal
         );
     }
 
@@ -1514,6 +1514,390 @@
     }
 
 
+    // ========================================================
+    // CONTRIBUTION PLEDGE
+    // ========================================================
+
+    function generatePledgeReference() {
+        const now = new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(
+                now.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                now.getDate()
+            ).padStart(2, "0");
+
+        const random =
+            Math.random()
+                .toString(36)
+                .slice(2, 8)
+                .toUpperCase();
+
+        return (
+            `PLEDGE-${year}${month}${day}-${random}`
+        );
+    }
+
+
+    function openContributionModal() {
+        const modal =
+            document.getElementById(
+                "contributionModal"
+            );
+
+        const formView =
+            document.getElementById(
+                "pledgeFormView"
+            );
+
+        const successView =
+            document.getElementById(
+                "pledgeSuccessView"
+            );
+
+        const form =
+            document.getElementById(
+                "contributionForm"
+            );
+
+        const error =
+            document.getElementById(
+                "pledgeError"
+            );
+
+        form.reset();
+
+        error.hidden = true;
+
+        formView.hidden = false;
+        successView.hidden = true;
+
+        const f =
+            fundingNumbers();
+
+        document.getElementById(
+            "pledgeTargetSummary"
+        ).innerHTML = `
+            <div class="pledge-target-item">
+                <span>Music</span>
+                <strong>
+                    ${money(f.music)}
+                </strong>
+            </div>
+
+            <div class="pledge-target-item">
+                <span>Coding</span>
+                <strong>
+                    ${money(f.coding)}
+                </strong>
+            </div>
+
+            <div class="pledge-target-item">
+                <span>Overall</span>
+                <strong>
+                    ${money(f.target)}
+                </strong>
+            </div>
+        `;
+
+        modal.hidden = false;
+
+        document.body
+            .classList
+            .add("modal-open");
+
+        setTimeout(
+            () => {
+                document.getElementById(
+                    "contributorName"
+                ).focus();
+            },
+            50
+        );
+    }
+
+
+    function closeContributionModal() {
+        document.getElementById(
+            "contributionModal"
+        ).hidden = true;
+
+        document.body
+            .classList
+            .remove("modal-open");
+    }
+
+
+    async function submitContributionPledge(event) {
+        event.preventDefault();
+
+        const form =
+            document.getElementById(
+                "contributionForm"
+            );
+
+        const submitButton =
+            form.querySelector(
+                'button[type="submit"]'
+            );
+
+        const error =
+            document.getElementById(
+                "pledgeError"
+            );
+
+        const name =
+            document.getElementById(
+                "contributorName"
+            ).value.trim();
+
+        const email =
+            document.getElementById(
+                "contributorEmail"
+            ).value.trim();
+
+        const message =
+            document.getElementById(
+                "contributionMessage"
+            ).value.trim();
+
+        const purpose =
+            document.getElementById(
+                "contributionPurpose"
+            ).value;
+
+        const amount =
+            Number(
+                document.getElementById(
+                    "contributionAmount"
+                ).value
+            );
+
+
+        if (!name) {
+            error.textContent =
+                "Please enter your name.";
+
+            error.hidden = false;
+            return;
+        }
+
+
+        if (
+            !Number.isFinite(amount) ||
+            amount <= 0
+        ) {
+            error.textContent =
+                "Please enter a valid contribution amount.";
+
+            error.hidden = false;
+            return;
+        }
+
+
+        const endpoint =
+            config.funding
+                .pledgeEndpoint;
+
+
+        if (
+            !endpoint ||
+            !endpoint.startsWith(
+                "https://formspree.io/f/"
+            )
+        ) {
+            error.textContent =
+                "The pledge email service has not been configured.";
+
+            error.hidden = false;
+            return;
+        }
+
+
+        error.hidden = true;
+
+        submitButton.disabled = true;
+
+        const originalText =
+            submitButton.textContent;
+
+        submitButton.textContent =
+            "Sending...";
+
+
+        const reference =
+            generatePledgeReference();
+
+        const now =
+            new Date();
+
+        const f =
+            fundingNumbers();
+
+
+        const payload = {
+            _subject:
+                `New Development Pledge — ${money(amount)}`,
+
+            name:
+                name,
+
+            contribution:
+                money(amount),
+
+            amount_egp:
+                amount,
+
+            allocation_preference:
+                purpose,
+
+            contributor_email:
+                email || "Not provided",
+
+            message:
+                message || "No message",
+
+            pledge_reference:
+                reference,
+
+            submitted:
+                now.toLocaleString(),
+
+            music_target:
+                money(f.music),
+
+            coding_target:
+                money(f.coding),
+
+            overall_target:
+                money(f.target),
+
+            payment_status:
+                "PLEDGE ONLY — NOT PAID",
+
+            source:
+                "Development Dashboard"
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    endpoint,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "Accept":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                let detail = "";
+
+                try {
+                    const result =
+                        await response.json();
+
+                    detail =
+                        result.error ||
+                        result.message ||
+                        "";
+                }
+                catch {
+                    // No JSON response.
+                }
+
+                throw new Error(
+                    detail ||
+                    `Submission failed (${response.status})`
+                );
+            }
+
+
+            document.getElementById(
+                "successName"
+            ).textContent =
+                name;
+
+
+            document.getElementById(
+                "successAmount"
+            ).textContent =
+                money(amount);
+
+
+            document.getElementById(
+                "successReference"
+            ).textContent =
+                reference;
+
+
+            document.getElementById(
+                "successDate"
+            ).textContent =
+                now.toLocaleString();
+
+
+            document.getElementById(
+                "pledgeFormView"
+            ).hidden = true;
+
+
+            document.getElementById(
+                "pledgeSuccessView"
+            ).hidden = false;
+
+
+            console.log(
+                "Pledge submitted:",
+                reference
+            );
+
+        }
+        catch (submissionError) {
+
+            console.error(
+                "Pledge submission failed:",
+                submissionError
+            );
+
+            error.textContent =
+                "We couldn't submit your pledge. Please check your connection and try again.";
+
+            error.hidden = false;
+
+        }
+        finally {
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                originalText;
+        }
+    }
+
     document
         .querySelectorAll(
             "[data-section]"
@@ -1584,7 +1968,7 @@
         "fundBtn"
     ).addEventListener(
         "click",
-        renderFunding
+        openContributionModal
     );
 
 
@@ -1594,7 +1978,71 @@
         `1 AED ≈ ${rate.toFixed(2)} EGP`;
 
 
+    document.getElementById(
+        "contributionForm"
+    ).addEventListener(
+        "submit",
+        submitContributionPledge
+    );
+
+
+    document.getElementById(
+        "closeContributionModal"
+    ).addEventListener(
+        "click",
+        closeContributionModal
+    );
+
+
+    document.getElementById(
+        "cancelContribution"
+    ).addEventListener(
+        "click",
+        closeContributionModal
+    );
+
+
+    document.getElementById(
+        "finishContribution"
+    ).addEventListener(
+        "click",
+        closeContributionModal
+    );
+
+
+    document.getElementById(
+        "contributionModal"
+    ).addEventListener(
+        "click",
+        event => {
+            if (
+                event.target.id ===
+                "contributionModal"
+            ) {
+                closeContributionModal();
+            }
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+            if (
+                event.key === "Escape" &&
+                !document.getElementById(
+                    "contributionModal"
+                ).hidden
+            ) {
+                closeContributionModal();
+            }
+        }
+    );
+
+
     updateGlobalFunding();
 })();
+
+
 
 

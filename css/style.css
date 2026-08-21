@@ -1622,3 +1622,538 @@ footer {
     }
 
 }
+
+/* ==========================================================
+   CONTRIBUTION / GUESS THE CHECK
+   ========================================================== */
+
+.modal-backdrop {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    padding: 25px;
+
+    background:
+        rgba(2, 5, 10, .78);
+
+    backdrop-filter:
+        blur(10px);
+
+    overflow-y: auto;
+}
+
+
+.modal-backdrop:not([hidden]) {
+    display: grid;
+
+    place-items: center;
+}
+
+
+.contribution-modal {
+    width:
+        min(560px, 100%);
+
+    position: relative;
+
+    padding: 30px;
+
+    border:
+        1px solid var(--line-bright);
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #111824,
+            #0b1019
+        );
+
+    box-shadow:
+        0 30px 100px
+        rgba(0, 0, 0, .55);
+}
+
+
+.modal-close {
+    position: absolute;
+
+    top: 16px;
+    right: 17px;
+
+    width: 35px;
+    height: 35px;
+
+    border:
+        1px solid var(--line);
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+
+.modal-close:hover {
+    color: white;
+
+    border-color:
+        var(--line-bright);
+}
+
+
+.contribution-modal h2 {
+    margin:
+        5px 45px 8px 0;
+
+    font-size: 34px;
+
+    letter-spacing: -1px;
+}
+
+
+.modal-lead {
+    margin:
+        0 0 22px;
+
+    color: var(--muted);
+
+    line-height: 1.6;
+}
+
+
+.pledge-target-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 1px;
+
+    margin-bottom: 24px;
+
+    overflow: hidden;
+
+    border:
+        1px solid var(--line);
+
+    border-radius: 12px;
+
+    background: var(--line);
+}
+
+
+.pledge-target-item {
+    padding: 13px;
+
+    background: var(--surface);
+}
+
+
+.pledge-target-item span {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+
+.pledge-target-item strong {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 15px;
+}
+
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 12px;
+
+    font-weight: 800;
+}
+
+
+.optional-label {
+    margin-left: 5px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    font-weight: 500;
+}
+
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+
+    border:
+        1px solid var(--line);
+
+    border-radius: 9px;
+
+    background:
+        #080c13;
+
+    color: white;
+
+    padding:
+        12px 13px;
+
+    outline: none;
+}
+
+
+.form-group textarea {
+    resize: vertical;
+
+    min-height: 80px;
+}
+
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color:
+        var(--blue);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(96, 149, 255, .08);
+}
+
+
+.form-group small {
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--muted-2);
+
+    font-size: 10px;
+}
+
+
+.amount-input {
+    position: relative;
+}
+
+
+.amount-input input {
+    padding-right: 60px;
+
+    font-size: 19px;
+
+    font-weight: 900;
+}
+
+
+.amount-input span {
+    position: absolute;
+
+    top: 50%;
+    right: 14px;
+
+    transform:
+        translateY(-50%);
+
+    color: var(--green);
+
+    font-size: 12px;
+
+    font-weight: 900;
+}
+
+
+.pledge-notice {
+    margin:
+        20px 0;
+
+    padding:
+        13px 15px;
+
+    border:
+        1px solid
+        rgba(255, 180, 84, .28);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 180, 84, .055);
+}
+
+
+.pledge-notice strong {
+    color: #e3c999;
+
+    font-size: 12px;
+}
+
+
+.pledge-notice p {
+    margin:
+        5px 0 0;
+
+    color: #ad9d7f;
+
+    font-size: 11px;
+
+    line-height: 1.55;
+}
+
+
+.modal-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    margin-top: 22px;
+}
+
+
+.secondary-button {
+    border:
+        1px solid var(--line);
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    padding:
+        11px 16px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.secondary-button:hover {
+    color: white;
+
+    border-color:
+        var(--line-bright);
+}
+
+
+.submit-pledge {
+    min-width: 145px;
+}
+
+
+.form-error {
+    padding: 11px 13px;
+
+    border:
+        1px solid
+        rgba(255, 104, 121, .35);
+
+    border-radius: 9px;
+
+    background:
+        rgba(255, 104, 121, .07);
+
+    color: #ffabb5;
+
+    font-size: 12px;
+}
+
+
+.pledge-success {
+    text-align: center;
+}
+
+
+.success-icon {
+    width: 58px;
+    height: 58px;
+
+    margin:
+        0 auto 20px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(56, 212, 135, .12);
+
+    border:
+        1px solid
+        rgba(56, 212, 135, .35);
+
+    color: var(--green);
+
+    font-size: 25px;
+
+    font-weight: 950;
+}
+
+
+.pledge-success h2 {
+    margin-right: 0;
+}
+
+
+.pledge-success > p {
+    color: var(--muted);
+}
+
+
+.pledge-receipt {
+    margin:
+        25px 0;
+
+    border:
+        1px solid var(--line);
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    text-align: left;
+}
+
+
+.pledge-receipt > div {
+    padding:
+        13px 15px;
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    gap: 20px;
+
+    background:
+        rgba(8, 12, 19, .6);
+}
+
+
+.pledge-receipt > div +
+div {
+    border-top:
+        1px solid var(--line);
+}
+
+
+.pledge-receipt span {
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+
+.pledge-receipt strong {
+    text-align: right;
+
+    font-size: 12px;
+}
+
+
+.full-button {
+    width: 100%;
+}
+
+
+body.modal-open {
+    overflow: hidden;
+}
+
+
+@media (max-width: 650px) {
+
+    .modal-backdrop {
+        padding: 12px;
+
+        align-items: end;
+    }
+
+    .contribution-modal {
+        padding:
+            25px 19px 20px;
+
+        border-radius:
+            18px 18px 10px 10px;
+    }
+
+    .contribution-modal h2 {
+        font-size: 29px;
+    }
+
+    .pledge-target-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .pledge-target-item {
+        display: flex;
+
+        justify-content:
+            space-between;
+
+        align-items: center;
+    }
+
+    .pledge-target-item strong {
+        margin-top: 0;
+    }
+
+    .modal-actions {
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+}
+
+.form-group select {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: #080c13;
+    color: white;
+    padding: 12px 13px;
+    outline: none;
+}
+
+.form-group select:focus {
+    border-color: var(--blue);
+    box-shadow:
+        0 0 0 3px
+        rgba(96, 149, 255, .08);
+}
+

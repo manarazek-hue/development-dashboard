@@ -8,7 +8,9 @@
 
     funding: {
         raisedEGP: 0,
-        instapayUrl: ""
+        instapayUrl: "",
+
+        pledgeEndpoint: "https://formspree.io/f/xeajdavk"
     },
 
     sections: {
@@ -855,5 +857,6 @@
         }
     }
 };
+
 
 
