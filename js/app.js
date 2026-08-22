@@ -1544,11 +1544,62 @@
     // PRESENTATION
     // ========================================================
 
+    function officialFundingNumbers() {
+        // Public presentation figures.
+        //
+        // These represent the official project plan and do not
+        // change when a visitor experiments with Music/Coding
+        // product selections in their browser.
+
+        const music =
+            19459.62;
+
+        const coding =
+            62031.89;
+
+        const target =
+            81491.51;
+
+        const raised =
+            Math.round(
+                config.funding.raisedEGP * 100
+            ) / 100;
+
+        const remaining =
+            Math.max(
+                Math.round(
+                    (target - raised) * 100
+                ) / 100,
+                0
+            );
+
+        const percent =
+            target > 0
+                ? Math.min(
+                    raised /
+                    target *
+                    100,
+                    100
+                )
+                : 0;
+
+        return {
+            music,
+            coding,
+            target,
+            raised,
+            remaining,
+            percent
+        };
+    }
+
+
     function renderPresentation() {
         currentSection = null;
 
         const f =
-            fundingNumbers();
+            officialFundingNumbers();
+
 
         document.getElementById(
             "presentationFundingHero"
@@ -1557,7 +1608,7 @@
 
                 <div>
                     <span class="metric-label">
-                        Music Goal
+                        Music
                     </span>
 
                     <span class="metric-value">
@@ -1567,7 +1618,7 @@
 
                 <div>
                     <span class="metric-label">
-                        Coding Goal
+                        Coding
                     </span>
 
                     <span class="metric-value">
@@ -1577,7 +1628,7 @@
 
                 <div>
                     <span class="metric-label">
-                        Overall Goal
+                        Total Goal
                     </span>
 
                     <span class="metric-value">
@@ -1588,50 +1639,111 @@
             </div>
 
             <div class="progress-track">
+
                 <div
                     class="progress-fill"
                     style="width:${f.percent}%"
                 ></div>
+
             </div>
 
             <div class="funding-small">
                 ${money(f.raised)}
-                confirmed raised &middot;
+                actually received ·
                 ${money(f.remaining)}
-                remaining
+                still needed
             </div>
         `;
+
 
         document.getElementById(
             "presentationMusicTarget"
         ).textContent =
             money(f.music);
 
+
         document.getElementById(
             "presentationCodingTarget"
         ).textContent =
             money(f.coding);
 
+
+        document.getElementById(
+            "plainMusicBudget"
+        ).textContent =
+            money(f.music);
+
+
+        document.getElementById(
+            "plainCodingBudget"
+        ).textContent =
+            money(f.coding);
+
+
+        document.getElementById(
+            "plainBudgetBreakdown"
+        ).innerHTML = `
+            <div>
+                <span>
+                    Music
+                </span>
+
+                <strong>
+                    ${money(f.music)}
+                </strong>
+            </div>
+
+            <div>
+                <span>
+                    New Computer & Workspace
+                </span>
+
+                <strong>
+                    ${money(f.coding)}
+                </strong>
+            </div>
+
+            <div class="plain-budget-total">
+                <span>
+                    Total Goal
+                </span>
+
+                <strong>
+                    ${money(f.target)}
+                </strong>
+            </div>
+        `;
+
+
         document.getElementById(
             "presentationFinalFunding"
         ).innerHTML = `
-            <span>Current Development Goal</span>
-            <strong>${money(f.target)}</strong>
+            <span>
+                Current Goal
+            </span>
+
+            <strong>
+                ${money(f.target)}
+            </strong>
         `;
+
 
         showView(
             "presentation"
         );
+
 
         const url =
             new URL(
                 window.location.href
             );
 
+
         url.searchParams.set(
             "view",
             "presentation"
         );
+
 
         history.replaceState(
             {},
@@ -1639,7 +1751,6 @@
             url
         );
     }
-
 
     function leavePresentationURL() {
         const url =
@@ -2302,6 +2413,36 @@
     ).addEventListener(
         "click",
         openContributionModal
+    );
+
+
+    document.getElementById(
+        "plainContributeBtn"
+    ).addEventListener(
+        "click",
+        openContributionModal
+    );
+
+
+    document.getElementById(
+        "presentationMusicOpenBtn"
+    ).addEventListener(
+        "click",
+        () => {
+            leavePresentationURL();
+            renderSection("music");
+        }
+    );
+
+
+    document.getElementById(
+        "presentationCodingOpenBtn"
+    ).addEventListener(
+        "click",
+        () => {
+            leavePresentationURL();
+            renderSection("coding");
+        }
     );
 
 
