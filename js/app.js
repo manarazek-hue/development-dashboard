@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
     "use strict";
 
     const config = DASHBOARD_CONFIG;
@@ -28,6 +28,11 @@
         funding:
             document.getElementById(
                 "fundingView"
+            ),
+
+        presentation:
+            document.getElementById(
+                "presentationView"
             )
     };
 
@@ -77,6 +82,7 @@
             new Intl.NumberFormat(
                 "en-US",
                 {
+                    minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }
             ).format(value)
@@ -298,25 +304,45 @@
 
 
     function fundingNumbers() {
-        const music =
+        // Financial totals are normalized to piasters before
+        // combining them so displayed section totals always
+        // reconcile exactly with the overall total.
+
+        const musicRaw =
             sectionTarget(
                 config.sections.music
             );
 
-        const coding =
+        const codingRaw =
             sectionTarget(
                 config.sections.coding
             );
 
+        const music =
+            Math.round(
+                musicRaw * 100
+            ) / 100;
+
+        const coding =
+            Math.round(
+                codingRaw * 100
+            ) / 100;
+
         const target =
-            music + coding;
+            Math.round(
+                (music + coding) * 100
+            ) / 100;
 
         const raised =
-            config.funding.raisedEGP;
+            Math.round(
+                config.funding.raisedEGP * 100
+            ) / 100;
 
         const remaining =
             Math.max(
-                target - raised,
+                Math.round(
+                    (target - raised) * 100
+                ) / 100,
                 0
             );
 
@@ -339,7 +365,6 @@
             percent
         };
     }
-
 
     function showView(
         name,
@@ -427,14 +452,14 @@
                     ${build.requirements
                         .map(
                             item =>
-                                `<span>✓ ${item}</span>`
+                                `<span>&#10003; ${item}</span>`
                         )
                         .join("")}
 
                 </div>
 
                 <div class="local-build-footer">
-                    LOCAL PURCHASE · ASSEMBLED IN EGYPT
+                    LOCAL PURCHASE &middot; ASSEMBLED IN EGYPT
                 </div>
 
             </section>
@@ -491,7 +516,7 @@
                                     <span
                                         class="owned-badge"
                                     >
-                                        ✓ OWNED ·
+                                        &#10003; OWNED &middot;
                                         ${item.category}
                                     </span>
 
@@ -1266,9 +1291,9 @@
 
             <div class="funding-small">
                 ${money(f.raised)}
-                raised ·
+                raised &middot;
                 ${money(f.remaining)}
-                remaining ·
+                remaining &middot;
                 ${f.percent.toFixed(1)}%
                 funded
             </div>
@@ -1514,6 +1539,193 @@
     }
 
 
+
+    // ========================================================
+    // PRESENTATION
+    // ========================================================
+
+    function renderPresentation() {
+        currentSection = null;
+
+        const f =
+            fundingNumbers();
+
+        document.getElementById(
+            "presentationFundingHero"
+        ).innerHTML = `
+            <div class="metric-grid">
+
+                <div>
+                    <span class="metric-label">
+                        Music Goal
+                    </span>
+
+                    <span class="metric-value">
+                        ${money(f.music)}
+                    </span>
+                </div>
+
+                <div>
+                    <span class="metric-label">
+                        Coding Goal
+                    </span>
+
+                    <span class="metric-value">
+                        ${money(f.coding)}
+                    </span>
+                </div>
+
+                <div>
+                    <span class="metric-label">
+                        Overall Goal
+                    </span>
+
+                    <span class="metric-value">
+                        ${money(f.target)}
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="progress-track">
+                <div
+                    class="progress-fill"
+                    style="width:${f.percent}%"
+                ></div>
+            </div>
+
+            <div class="funding-small">
+                ${money(f.raised)}
+                confirmed raised &middot;
+                ${money(f.remaining)}
+                remaining
+            </div>
+        `;
+
+        document.getElementById(
+            "presentationMusicTarget"
+        ).textContent =
+            money(f.music);
+
+        document.getElementById(
+            "presentationCodingTarget"
+        ).textContent =
+            money(f.coding);
+
+        document.getElementById(
+            "presentationFinalFunding"
+        ).innerHTML = `
+            <span>Current Development Goal</span>
+            <strong>${money(f.target)}</strong>
+        `;
+
+        showView(
+            "presentation"
+        );
+
+        const url =
+            new URL(
+                window.location.href
+            );
+
+        url.searchParams.set(
+            "view",
+            "presentation"
+        );
+
+        history.replaceState(
+            {},
+            "",
+            url
+        );
+    }
+
+
+    function leavePresentationURL() {
+        const url =
+            new URL(
+                window.location.href
+            );
+
+        url.searchParams.delete(
+            "view"
+        );
+
+        history.replaceState(
+            {},
+            "",
+            url
+        );
+    }
+
+
+    async function sharePresentation() {
+        const url =
+            new URL(
+                window.location.href
+            );
+
+        url.searchParams.set(
+            "view",
+            "presentation"
+        );
+
+        const shareURL =
+            url.toString();
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title:
+                        "Development Infrastructure & Growth Roadmap",
+
+                    text:
+                        "Music, Coding & AI Development Roadmap",
+
+                    url:
+                        shareURL
+                });
+            }
+            catch {
+                // Share cancelled by user.
+            }
+
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(
+                shareURL
+            );
+
+            const button =
+                document.getElementById(
+                    "sharePresentationBtn"
+                );
+
+            const original =
+                button.textContent;
+
+            button.textContent =
+                "Link Copied &#10003;";
+
+            setTimeout(
+                () => {
+                    button.textContent =
+                        original;
+                },
+                1800
+            );
+        }
+        catch {
+            window.prompt(
+                "Copy presentation link:",
+                shareURL
+            );
+        }
+    }
+
+
     // ========================================================
     // CONTRIBUTION PLEDGE
     // ========================================================
@@ -1744,7 +1956,7 @@
 
         const payload = {
             _subject:
-                `New Development Pledge — ${money(amount)}`,
+                `New Development Pledge &mdash; ${money(amount)}`,
 
             name:
                 name,
@@ -1780,7 +1992,7 @@
                 money(f.target),
 
             payment_status:
-                "PLEDGE ONLY — NOT PAID",
+                "PLEDGE ONLY &mdash; NOT PAID",
 
             source:
                 "Development Dashboard"
@@ -2040,7 +2252,97 @@
     );
 
 
+
+
+    document.getElementById(
+        "presentationNavBtn"
+    ).addEventListener(
+        "click",
+        renderPresentation
+    );
+
+
+    document.getElementById(
+        "homePresentationBtn"
+    ).addEventListener(
+        "click",
+        renderPresentation
+    );
+
+
+    document.getElementById(
+        "presentationBackBtn"
+    ).addEventListener(
+        "click",
+        () => {
+            leavePresentationURL();
+            showView("home");
+        }
+    );
+
+
+    document.getElementById(
+        "sharePresentationBtn"
+    ).addEventListener(
+        "click",
+        sharePresentation
+    );
+
+
+    document.getElementById(
+        "presentationContributeBtn"
+    ).addEventListener(
+        "click",
+        openContributionModal
+    );
+
+
+    document.getElementById(
+        "presentationFinalContributeBtn"
+    ).addEventListener(
+        "click",
+        openContributionModal
+    );
+
+
+    document.getElementById(
+        "presentationMusicBtn"
+    ).addEventListener(
+        "click",
+        () => {
+            leavePresentationURL();
+            renderSection("music");
+        }
+    );
+
+
+    document.getElementById(
+        "presentationCodingBtn"
+    ).addEventListener(
+        "click",
+        () => {
+            leavePresentationURL();
+            renderSection("coding");
+        }
+    );
+
+
     updateGlobalFunding();
+
+
+    const initialView =
+        new URLSearchParams(
+            window.location.search
+        ).get("view");
+
+
+    if (
+        initialView ===
+        "presentation"
+    ) {
+        renderPresentation();
+    }
+
 })();
 
 

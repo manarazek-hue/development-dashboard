@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
     <title>Development Dashboard</title>
 
     <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" href="css/style.css?v=2.4.1">
+    <link rel="stylesheet" href="css/style.css?v=2.5.1">
 </head>
 
 <body>
@@ -35,6 +35,10 @@
 
         <button data-nav-section="coding">
             Coding
+        </button>
+
+        <button id="presentationNavBtn">
+            Presentation
         </button>
     </nav>
 
@@ -93,7 +97,7 @@
                 class="path-card music-path"
                 data-section="music"
             >
-                <div class="path-icon">♪</div>
+                <div class="path-icon">&#9834;</div>
 
                 <div>
                     <span class="path-type">
@@ -110,7 +114,7 @@
                     </p>
                 </div>
 
-                <span class="path-arrow">→</span>
+                <span class="path-arrow">&rarr;</span>
             </button>
 
 
@@ -137,12 +141,40 @@
                     </p>
                 </div>
 
-                <span class="path-arrow">→</span>
+                <span class="path-arrow">&rarr;</span>
             </button>
 
         </div>
 
         <div id="globalFunding"></div>
+
+
+        <section class="home-presentation-card">
+
+            <div>
+                <p class="eyebrow">
+                    PROJECT PRESENTATION
+                </p>
+
+                <h2>
+                    See the complete development roadmap.
+                </h2>
+
+                <p>
+                    Current infrastructure, verified AI capability,
+                    Music and Coding development plans, funding
+                    strategy and the next phase.
+                </p>
+            </div>
+
+            <button
+                id="homePresentationBtn"
+                class="presentation-button"
+            >
+                View Presentation &rarr;
+            </button>
+
+        </section>
 
     </section>
 
@@ -152,7 +184,7 @@
     <section id="productsView" class="view">
 
         <button id="backBtn" class="back-button">
-            ← Dashboard
+            &larr; Dashboard
         </button>
 
         <div class="section-hero">
@@ -223,12 +255,903 @@
     </section>
 
 
+
+    <!-- PRESENTATION -->
+
+    <section id="presentationView" class="view">
+
+        <div class="presentation-toolbar">
+
+            <button
+                id="presentationBackBtn"
+                class="back-button"
+            >
+                &larr; Dashboard
+            </button>
+
+            <button
+                id="sharePresentationBtn"
+                class="secondary-button"
+            >
+                Share Presentation
+            </button>
+
+        </div>
+
+
+        <section class="presentation-hero">
+
+            <p class="eyebrow">
+                DEVELOPMENT INFRASTRUCTURE & GROWTH ROADMAP
+            </p>
+
+            <h1>
+                Building capability across
+                <span>Music, Code & AI.</span>
+            </h1>
+
+            <p class="presentation-intro">
+                A practical roadmap built from an existing
+                development system &mdash; identifying current
+                capability, hardware limits, upgrade priorities,
+                market expectations and funding requirements.
+            </p>
+
+            <div
+                id="presentationFundingHero"
+                class="presentation-live-funding"
+            ></div>
+
+            <div class="presentation-actions">
+
+                <button
+                    id="presentationContributeBtn"
+                    class="primary-button"
+                >
+                    Guess the Check
+                </button>
+
+                <button
+                    id="presentationMusicBtn"
+                    class="secondary-button"
+                >
+                    Music Roadmap
+                </button>
+
+                <button
+                    id="presentationCodingBtn"
+                    class="secondary-button"
+                >
+                    Coding Roadmap
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- 01 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                01
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    CURRENT FOUNDATION
+                </p>
+
+                <h2>
+                    Start with what already exists.
+                </h2>
+
+                <p>
+                    The project began by auditing the current
+                    development machine instead of immediately
+                    replacing it.
+                </p>
+
+            </div>
+
+
+            <div class="presentation-grid">
+
+                <article>
+                    <small>LAPTOP</small>
+
+                    <strong>
+                        Lenovo IdeaPad L340-15IRH Gaming
+                    </strong>
+
+                    <p>
+                        Machine type 81LK
+                    </p>
+                </article>
+
+
+                <article>
+                    <small>CPU</small>
+
+                    <strong>
+                        Intel Core i5-9300H
+                    </strong>
+
+                    <p>
+                        4 cores &middot; 8 threads
+                    </p>
+                </article>
+
+
+                <article class="presentation-accent">
+
+                    <small>GPU</small>
+
+                    <strong>
+                        NVIDIA GTX 1650
+                    </strong>
+
+                    <p>
+                        4 GB VRAM &middot; CUDA verified
+                    </p>
+                </article>
+
+
+                <article>
+                    <small>MEMORY</small>
+
+                    <strong>
+                        8 GB DDR4
+                    </strong>
+
+                    <p>
+                        2400 MT/s operating speed
+                    </p>
+                </article>
+
+
+                <article>
+                    <small>PRIMARY STORAGE</small>
+
+                    <strong>
+                        128 GB Samsung SSD
+                    </strong>
+
+                    <p>
+                        Current system drive
+                    </p>
+                </article>
+
+
+                <article>
+                    <small>SECONDARY STORAGE</small>
+
+                    <strong>
+                        1 TB WD HDD
+                    </strong>
+
+                    <p>
+                        Projects &middot; media &middot; datasets
+                    </p>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- 02 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                02
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    VERIFIED AI CAPABILITY
+                </p>
+
+                <h2>
+                    CUDA isn't theoretical.
+                </h2>
+
+                <p>
+                    A real PyTorch GPU computation was executed
+                    successfully on the existing GTX 1650.
+                </p>
+
+            </div>
+
+
+            <div class="presentation-cuda">
+
+                <div class="presentation-pass">
+                    <i></i>
+                    GPU COMPUTE VERIFIED
+                </div>
+
+                <div class="presentation-cuda-grid">
+
+                    <div>
+                        <span>PYTORCH</span>
+                        <strong>2.11.0+cu128</strong>
+                    </div>
+
+                    <div>
+                        <span>CUDA</span>
+                        <strong>12.8</strong>
+                    </div>
+
+                    <div>
+                        <span>GPU</span>
+                        <strong>GTX 1650</strong>
+                    </div>
+
+                    <div>
+                        <span>VRAM</span>
+                        <strong>4 GB</strong>
+                    </div>
+
+                    <div>
+                        <span>REAL CUDA TEST</span>
+                        <strong class="green-text">
+                            PASS
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- 03 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                03
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    DEVELOPMENT PLATFORM
+                </p>
+
+                <h2>
+                    The software foundation is already operational.
+                </h2>
+
+            </div>
+
+
+            <div class="presentation-tools">
+
+                <article>
+                    <h3>Development</h3>
+
+                    <div>
+                        <span>Python 3.10</span>
+                        <span>VS Code</span>
+                        <span>Git</span>
+                        <span>PowerShell</span>
+                        <span>GitHub</span>
+                        <span>Docker</span>
+                        <span>WSL2</span>
+                    </div>
+                </article>
+
+
+                <article>
+                    <h3>AI & Machine Learning</h3>
+
+                    <div>
+                        <span>PyTorch</span>
+                        <span>Transformers</span>
+                        <span>faster-whisper</span>
+                        <span>CTranslate2</span>
+                        <span>ONNX Runtime</span>
+                        <span>scikit-learn</span>
+                        <span>Ollama</span>
+                    </div>
+                </article>
+
+
+                <article>
+                    <h3>Audio & Media</h3>
+
+                    <div>
+                        <span>FFmpeg 9</span>
+                        <span>Demucs</span>
+                        <span>Librosa</span>
+                        <span>SciPy</span>
+                        <span>NumPy</span>
+                        <span>SoundFile</span>
+                        <span>Praat-Parselmouth</span>
+                    </div>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- 04 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                04
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    EXISTING CAPABILITY
+                </p>
+
+                <h2>
+                    What the system can do today.
+                </h2>
+
+            </div>
+
+
+            <div class="presentation-capabilities">
+
+                <article>
+                    <b>AI</b>
+
+                    <h3>Local AI</h3>
+
+                    <p>
+                        Small local LLMs, Transformers,
+                        PyTorch inference and ONNX.
+                    </p>
+                </article>
+
+
+                <article>
+                    <b>STT</b>
+
+                    <h3>Speech Recognition</h3>
+
+                    <p>
+                        GPU-accelerated faster-whisper
+                        using CTranslate2.
+                    </p>
+                </article>
+
+
+                <article>
+                    <b>AUD</b>
+
+                    <h3>Audio AI</h3>
+
+                    <p>
+                        Stem separation, signal processing,
+                        feature and acoustic analysis.
+                    </p>
+                </article>
+
+
+                <article>
+                    <b>DEV</b>
+
+                    <h3>Software Development</h3>
+
+                    <p>
+                        Python applications, APIs,
+                        automation and web development.
+                    </p>
+                </article>
+
+
+                <article>
+                    <b>MED</b>
+
+                    <h3>Media Processing</h3>
+
+                    <p>
+                        FFmpeg audio/video processing,
+                        conversion and automation.
+                    </p>
+                </article>
+
+
+                <article>
+                    <b>WEB</b>
+
+                    <h3>Public Deployment</h3>
+
+                    <p>
+                        GitHub, GitHub Pages and
+                        responsive web applications.
+                    </p>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- 05 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                05
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    WHY EXPAND?
+                </p>
+
+                <h2>
+                    Four constraints define the next step.
+                </h2>
+
+            </div>
+
+
+            <div class="presentation-limits">
+
+                <article>
+                    <strong>8 GB</strong>
+                    <span>RAM</span>
+                    <p>Limits heavy multitasking and models.</p>
+                </article>
+
+                <article>
+                    <strong>4 GB</strong>
+                    <span>VRAM</span>
+                    <p>Restricts larger GPU workloads.</p>
+                </article>
+
+                <article>
+                    <strong>128 GB</strong>
+                    <span>SSD</span>
+                    <p>Restricts active development storage.</p>
+                </article>
+
+                <article>
+                    <strong>4C / 8T</strong>
+                    <span>CPU</span>
+                    <p>Limits heavier parallel workloads.</p>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- 06 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                06
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    TWO DEVELOPMENT PATHS
+                </p>
+
+                <h2>
+                    Creative capability + technical capability.
+                </h2>
+
+            </div>
+
+
+            <div class="presentation-path-grid">
+
+                <article>
+
+                    <span class="path-type">
+                        MUSIC DEVELOPMENT
+                    </span>
+
+                    <h3>
+                        Build the creative setup.
+                    </h3>
+
+                    <p>
+                        Recording, production, DJ development
+                        and focused laptop upgrades.
+                    </p>
+
+                    <strong
+                        id="presentationMusicTarget"
+                        class="presentation-target"
+                    ></strong>
+
+                    <button
+                        id="presentationMusicBtn"
+                        class="secondary-button"
+                    >
+                        View Music Roadmap
+                    </button>
+
+                </article>
+
+
+                <article>
+
+                    <span class="path-type">
+                        CODING & AI
+                    </span>
+
+                    <h3>
+                        Expand technical capacity.
+                    </h3>
+
+                    <p>
+                        A modern workstation for development,
+                        CUDA and larger local AI workloads.
+                    </p>
+
+                    <strong
+                        id="presentationCodingTarget"
+                        class="presentation-target"
+                    ></strong>
+
+                    <button
+                        id="presentationCodingBtn"
+                        class="secondary-button"
+                    >
+                        View Coding Roadmap
+                    </button>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- 07 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                07
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    SMART PROCUREMENT
+                </p>
+
+                <h2>
+                    Amazon defines the reference &mdash; not the vendor.
+                </h2>
+
+                <p>
+                    Amazon Egypt and UAE provide visible market
+                    expectations. Final purchasing can use any
+                    trusted supplier offering the required
+                    capability and better value.
+                </p>
+
+            </div>
+
+
+            <div class="presentation-flow">
+
+                <span>Amazon Egypt</span>
+                <i>+</i>
+                <span>Amazon UAE</span>
+                <i>&rarr;</i>
+                <span class="highlight">Market Reference</span>
+                <i>&rarr;</i>
+                <span>Best Trusted Source</span>
+
+            </div>
+
+
+            <blockquote>
+                Find the required capability. Establish the
+                market price. Purchase from the best
+                trustworthy source.
+            </blockquote>
+
+        </section>
+
+
+        <!-- 08 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                08
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    CODING WORKSTATION
+                </p>
+
+                <h2>
+                    Local assembly. Capability first.
+                </h2>
+
+            </div>
+
+
+            <div class="presentation-mall">
+
+                <div>
+
+                    <small>
+                        PC ASSEMBLY BUDGET
+                    </small>
+
+                    <strong>
+                        60,000 EGP
+                    </strong>
+
+                    <p>
+                        Purchase source
+                    </p>
+
+                    <h3>
+                        Mall el Bustan
+                    </h3>
+
+                </div>
+
+
+                <div>
+
+                    <span>&#10003; NVIDIA CUDA GPU</span>
+                    <span>&#10003; 12 GB VRAM minimum</span>
+                    <span>&#10003; 16 GB preferred</span>
+                    <span>&#10003; 32 GB RAM minimum</span>
+                    <span>&#10003; Modern multi-core CPU</span>
+                    <span>&#10003; 1 TB+ NVMe SSD</span>
+                    <span>&#10003; Reliable branded PSU</span>
+                    <span>&#10003; Upgradeable platform</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- 09 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                09
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    PROJECT OUTCOME
+                </p>
+
+                <h2>
+                    The roadmap became software.
+                </h2>
+
+            </div>
+
+
+            <div class="presentation-flow outcome">
+
+                <span>System Audit</span>
+                <i>&rarr;</i>
+
+                <span>Capability Analysis</span>
+                <i>&rarr;</i>
+
+                <span>Upgrade Strategy</span>
+                <i>&rarr;</i>
+
+                <span>Market Comparison</span>
+                <i>&rarr;</i>
+
+                <span>Funding Dashboard</span>
+                <i>&rarr;</i>
+
+                <span>Public Deployment</span>
+                <i>&rarr;</i>
+
+                <span>Pledge System</span>
+
+            </div>
+
+
+            <div class="presentation-tech">
+
+                <article>
+                    <small>FRONTEND</small>
+                    <strong>HTML &middot; CSS &middot; JavaScript</strong>
+                </article>
+
+                <article>
+                    <small>VERSION CONTROL</small>
+                    <strong>Git &middot; GitHub</strong>
+                </article>
+
+                <article>
+                    <small>HOSTING</small>
+                    <strong>GitHub Pages</strong>
+                </article>
+
+                <article>
+                    <small>PLEDGES</small>
+                    <strong>Formspree + Email</strong>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- 10 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                10
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    TRANSPARENCY
+                </p>
+
+                <h2>
+                    Pledged is not paid.
+                </h2>
+
+                <p>
+                    The system deliberately keeps supporter
+                    intent separate from actual received funds.
+                </p>
+
+            </div>
+
+
+            <div class="presentation-transparency">
+
+                <div>
+                    <strong>PLEDGED</strong>
+                    <span>Supporter intent</span>
+                </div>
+
+                <b>&ne;</b>
+
+                <div>
+                    <strong>PAID</strong>
+                    <span>Payment submitted</span>
+                </div>
+
+                <b>&ne;</b>
+
+                <div>
+                    <strong>RECEIVED</strong>
+                    <span>Funds confirmed</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- 11 -->
+
+        <section class="presentation-section">
+
+            <span class="presentation-number">
+                11
+            </span>
+
+            <div class="presentation-heading">
+
+                <p class="eyebrow">
+                    NEXT PHASE
+                </p>
+
+                <h2>
+                    From roadmap to acquisition.
+                </h2>
+
+            </div>
+
+
+            <div class="presentation-next">
+
+                <article>
+                    <span>01</span>
+                    <strong>Payment Integration</strong>
+                    <p>Add the actual payment route.</p>
+                </article>
+
+                <article>
+                    <span>02</span>
+                    <strong>Verified Funding</strong>
+                    <p>Track confirmed received funds.</p>
+                </article>
+
+                <article>
+                    <span>03</span>
+                    <strong>Equipment Acquisition</strong>
+                    <p>Purchase based on value and capability.</p>
+                </article>
+
+                <article>
+                    <span>04</span>
+                    <strong>Expanded Capability</strong>
+                    <p>Use the upgraded creative and AI platform.</p>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- FINAL -->
+
+        <section class="presentation-final">
+
+            <p class="eyebrow">
+                DEVELOPMENT INFRASTRUCTURE
+            </p>
+
+            <h2>
+                Build capability first.
+                <span>Upgrade where it matters.</span>
+            </h2>
+
+            <p>
+                Music creates creative capability.
+                Code creates technical capability.
+                AI expands what both can become.
+            </p>
+
+            <div
+                id="presentationFinalFunding"
+                class="presentation-final-total"
+            ></div>
+
+            <button
+                id="presentationFinalContributeBtn"
+                class="primary-button"
+            >
+                Guess the Check
+            </button>
+
+        </section>
+
+    </section>
+
+
     <!-- FUNDING -->
 
     <section id="fundingView" class="view">
 
         <button id="fundBackBtn" class="back-button">
-            ← Dashboard
+            &larr; Dashboard
         </button>
 
         <div class="section-hero">
@@ -299,7 +1222,7 @@
             type="button"
             aria-label="Close contribution form"
         >
-            ×
+            &mdash;
         </button>
 
 
@@ -510,7 +1433,7 @@
         >
 
             <div class="success-icon">
-                ✓
+                &#10003;
             </div>
 
             <p class="eyebrow">
@@ -589,11 +1512,12 @@
 
 </div>
 
-<script src="data/config.js?v=2.4.1"></script>
-<script src="js/app.js?v=2.4.1"></script>
+<script src="data/config.js?v=2.5.1"></script>
+<script src="js/app.js?v=2.5.2"></script>
 
 </body>
 </html>
+
 
 
 
